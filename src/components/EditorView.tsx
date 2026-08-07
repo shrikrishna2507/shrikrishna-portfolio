@@ -318,7 +318,7 @@ export const EditorView: React.FC<EditorViewProps> = ({
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: '13px', color: 'var(--text-keyword)', fontWeight: 700, marginBottom: '10px' }}>Computer Vision & Databases</div>
+                <div style={{ fontSize: '13px', color: 'var(--text-keyword)', fontWeight: 700, marginBottom: '10px' }}>Machine Learning & Databases</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   {[...data.skills.mlAi, ...data.skills.databases].map((sk, i) => <span key={i} className="badge">{sk}</span>)}
                 </div>
