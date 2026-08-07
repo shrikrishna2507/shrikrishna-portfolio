@@ -26,6 +26,18 @@ export const initialProfileData: ProfileData = {
   },
   projects: [
     {
+      id: 'proj-8',
+      title: 'Personal Executive Web Portfolio & CMS',
+      subtitle: 'React.js & Glassmorphic Web App',
+      description: 'Built a responsive personal web portfolio featuring customizable frosted glassmorphic UI themes, real-time live project searching, audio rhythm visualizer widget, and master password-protected CMS editing.',
+      tech: ['React.js', 'TypeScript', 'Vite', 'CSS3', 'Vercel'],
+      team: 'Individual Project',
+      status: 'Completed',
+      date: 'Feb 2026',
+      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80',
+      githubUrl: 'https://github.com/shrikrishna2507/shrikrishna-portfolio',
+    },
+    {
       id: 'proj-1',
       title: 'Brand-Specific Apparel Fit Prediction & Virtual Try-On',
       subtitle: 'ML & Computer Vision Platform',
