@@ -205,9 +205,7 @@ export function App() {
       </div>
 
       <div className="app-container">
-        {/* EXECUTIVE WEBSITE MODE */}
-        {viewMode === 'website' && (
-          <div className="ide-wrapper" style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className="ide-wrapper" style={{ display: 'flex', flexDirection: 'column' }}>
             {/* Classic Aesthetic Header Navigation */}
             <header className="titlebar" style={{ height: '62px', padding: '0 28px', overflow: 'visible', zIndex: 50, position: 'relative' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -399,27 +397,6 @@ export function App() {
                   )}
                 </div>
 
-                <button 
-                  onClick={() => setViewMode('ide')}
-                  style={{
-                    background: 'var(--bg-hover)',
-                    color: 'var(--text-bright)',
-                    border: '1px solid var(--border-color)',
-                    padding: '6px 12px',
-                    borderRadius: '8px',
-                    fontSize: '12.5px',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}
-                  title="Switch to IDE Workstation Mode"
-                >
-                  <TerminalIcon size={15} />
-                  <span>IDE Mode</span>
-                </button>
-
                 {isAdmin ? (
                   <button className="cms-btn" onClick={() => { setCmsSection('profile'); setCmsOpen(true); }}>
                     <Edit3 size={14} />
@@ -463,86 +440,22 @@ export function App() {
               />
             </main>
           </div>
-        )}
 
-        {/* IDE WORKSTATION MODE */}
-        {viewMode === 'ide' && (
-          <div className="ide-wrapper">
-            <TitleBar 
-              activeFile={activeSection}
-              onToggleCms={() => setCmsOpen(!cmsOpen)}
-              onToggleTerminal={() => setTerminalOpen(!terminalOpen)}
-              theme={theme}
-              onThemeChange={setTheme}
-            />
-
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-titlebar)', padding: '4px 16px', borderBottom: '1px solid var(--border-color)' }}>
-              <span style={{ fontSize: '11px', color: 'var(--accent-color)', fontWeight: 600 }}>IDE WORKSTATION MODE</span>
-              <button 
-                onClick={() => setViewMode('website')}
-                style={{ background: 'var(--accent-glow)', border: '1px solid var(--border-color)', color: 'var(--accent-color)', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', cursor: 'pointer', fontWeight: 600 }}
-              >
-                Switch to Website View ➔
-              </button>
-            </div>
-
-            <div className="main-body">
-              <Sidebar 
-                activeFile={activeSection}
-                onSelectFile={handleSelectFile}
-                onToggleCms={() => setCmsOpen(!cmsOpen)}
-                onToggleTerminal={() => setTerminalOpen(!terminalOpen)}
-                explorerOpen={explorerOpen}
-                onToggleExplorer={() => setExplorerOpen(!explorerOpen)}
-              />
-
-              {explorerOpen && (
-                <Explorer 
-                  activeFile={activeSection}
-                  onSelectFile={handleSelectFile}
-                />
-              )}
-
-              <div className="workspace">
-                <TabsBar 
-                  openTabs={openTabs}
-                  activeFile={activeSection}
-                  onSelectFile={handleSelectFile}
-                  onCloseTab={handleCloseTab}
-                />
-
-                <main className="editor-window">
-                  <EditorView 
-                    activeFile={activeSection}
-                    data={data}
-                    onOpenCms={(sec) => { setCmsSection(sec || 'profile'); setCmsOpen(true); }}
-                    onOpenImageModal={setImageModalSrc}
-                    onSelectFile={handleSelectFile}
-                    onDeleteProject={handleDeleteProject}
-                    onDeleteCert={handleDeleteCert}
-                    onDeleteAch={handleDeleteAch}
-                  />
-                </main>
-
-                {terminalOpen && (
-                  <TerminalView 
-                    data={data}
-                    onClose={() => setTerminalOpen(false)}
-                    onSelectFile={handleSelectFile}
-                    onThemeChange={setTheme}
-                    onOpenCms={() => setCmsOpen(true)}
-                  />
-                )}
-              </div>
-            </div>
-
-            <StatusBar 
-              activeFile={activeSection}
-              onToggleTerminal={() => setTerminalOpen(!terminalOpen)}
-              onToggleCms={() => setCmsOpen(!cmsOpen)}
-            />
-          </div>
-        )}
+        {/* Status Bar */}
+        <StatusBar 
+          data={data}
+          activeFile={activeSection}
+          theme={theme}
+          onToggleCms={() => {
+            if (isAdmin) {
+              setCmsSection('profile');
+              setCmsOpen(true);
+            } else {
+              setLoginModalOpen(true);
+            }
+          }}
+          onToggleTerminal={() => setTerminalOpen(!terminalOpen)}
+        />
 
         {/* Settings Wallpaper Selection Modal */}
         {bgModalOpen && (
