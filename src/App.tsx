@@ -121,6 +121,9 @@ export function App() {
 
   useEffect(() => {
     try {
+      for (let i = 1; i < 20; i++) {
+        localStorage.removeItem(`shrikrishna_portfolio_data_v${i}`);
+      }
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
     } catch (e) {
       console.error('Failed to save to localStorage', e);
@@ -224,9 +227,9 @@ export function App() {
   const navItems: { id: FileId; label: string; icon: React.ReactNode }[] = [
     { id: 'home.tsx', label: 'Overview', icon: <User size={15} /> },
     { id: 'about.html', label: 'About & Education', icon: <GraduationCap size={15} /> },
-    { id: 'projects.jsx', label: `Projects (${data.projects.length})`, icon: <FolderGit2 size={15} /> },
-    { id: 'certificates.md', label: `Certificates (${data.certifications.length})`, icon: <ShieldCheck size={15} /> },
-    { id: 'achievements.json', label: `Awards (${data.achievements.length})`, icon: <Award size={15} /> },
+    { id: 'projects.jsx', label: `Projects (${data?.projects?.length || 0})`, icon: <FolderGit2 size={15} /> },
+    { id: 'certificates.md', label: `Certificates (${data?.certifications?.length || 0})`, icon: <ShieldCheck size={15} /> },
+    { id: 'achievements.json', label: `Awards (${data?.achievements?.length || 0})`, icon: <Award size={15} /> },
     { id: 'hobbies.ts', label: 'Hobbies', icon: <Heart size={15} /> },
     { id: 'leetcode.ts', label: 'LeetCode (75)', icon: <Flame size={15} /> },
     { id: 'contact.css', label: 'Contact', icon: <Mail size={15} /> }
