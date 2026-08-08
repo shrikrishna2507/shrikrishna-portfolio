@@ -65,6 +65,13 @@ export const EditorView: React.FC<EditorViewProps> = ({
   const [certSearch, setCertSearch] = useState<string>('');
   const [activeTaal, setActiveTaal] = useState<string | null>(null);
 
+  const [hobbyTab, setHobbyTab] = useState<'car' | 'tabla' | 'cook' | 'garden' | 'scout'>('car');
+  const [rpmGauge, setRpmGauge] = useState<number>(3200);
+  const [isRevving, setIsRevving] = useState<boolean>(false);
+  const [isSizzling, setIsSizzling] = useState<boolean>(false);
+  const [plantStage, setPlantStage] = useState<number>(3);
+  const [compassAngle, setCompassAngle] = useState<number>(45);
+
   const triggerConfetti = () => {
     confetti({
       particleCount: 120,
@@ -241,6 +248,132 @@ export const EditorView: React.FC<EditorViewProps> = ({
     });
 
     setTimeout(() => setActiveTaal(null), config.sequence.length * config.tempo + 600);
+  };
+
+  const playEngineRevSound = () => {
+    try {
+      setIsRevving(true);
+      setRpmGauge(7600);
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const now = ctx.currentTime;
+
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc1.type = 'sawtooth';
+      osc2.type = 'triangle';
+
+      osc1.frequency.setValueAtTime(85, now);
+      osc1.frequency.exponentialRampToValueAtTime(390, now + 0.45);
+      osc1.frequency.exponentialRampToValueAtTime(110, now + 1.2);
+
+      osc2.frequency.setValueAtTime(42, now);
+      osc2.frequency.exponentialRampToValueAtTime(195, now + 0.45);
+      osc2.frequency.exponentialRampToValueAtTime(55, now + 1.2);
+
+      gain.gain.setValueAtTime(0.5, now);
+      gain.gain.linearRampToValueAtTime(0.85, now + 0.45);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + 1.2);
+      osc2.stop(now + 1.2);
+
+      setTimeout(() => {
+        setIsRevving(false);
+        setRpmGauge(3200);
+      }, 1200);
+    } catch (e) {}
+  };
+
+  const playSizzleSound = () => {
+    try {
+      setIsSizzling(true);
+      triggerConfetti();
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const now = ctx.currentTime;
+      const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 1.5, ctx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < noiseBuffer.length; i++) {
+        output[i] = Math.random() * 2 - 1;
+      }
+      const whiteNoise = ctx.createBufferSource();
+      whiteNoise.buffer = noiseBuffer;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 2400;
+      filter.Q.value = 1.2;
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.4, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+
+      whiteNoise.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      whiteNoise.start(now);
+
+      setTimeout(() => setIsSizzling(false), 1500);
+    } catch (e) {}
+  };
+
+  const playGardenChime = () => {
+    try {
+      setPlantStage(prev => (prev >= 4 ? 1 : prev + 1));
+      triggerConfetti();
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const now = ctx.currentTime;
+      const notes = [523.25, 659.25, 783.99, 1046.50];
+      notes.forEach((f, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(f, now + i * 0.12);
+        gain.gain.setValueAtTime(0.35, now + i * 0.12);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.6);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + i * 0.12);
+        osc.stop(now + i * 0.12 + 0.6);
+      });
+    } catch (e) {}
+  };
+
+  const playScoutChime = () => {
+    try {
+      setCompassAngle(prev => prev + 90);
+      triggerConfetti();
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const now = ctx.currentTime;
+      const notes = [440, 554.37, 659.25, 880];
+      notes.forEach((f, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(f, now + i * 0.1);
+        gain.gain.setValueAtTime(0.45, now + i * 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.7);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + i * 0.1);
+        osc.stop(now + i * 0.1 + 0.7);
+      });
+    } catch (e) {}
   };
 
   const filteredProjects = (data?.projects || []).filter(p => {
@@ -930,68 +1063,359 @@ export const EditorView: React.FC<EditorViewProps> = ({
       return (
         <div style={{ maxWidth: '960px', margin: '0 auto' }}>
           <h1 style={{ fontSize: '30px', color: 'var(--text-bright)', marginBottom: '8px' }}>
-            Hobbies & Personal Interests
+            Hobbies & Interactive Creative Hub
           </h1>
-          <p style={{ fontSize: '14.5px', color: 'var(--text-muted)', marginBottom: '32px' }}>
-            Automotive vehicle research, classical & fusion music, culinary arts, gardening, and outdoor exploration.
+          <p style={{ fontSize: '14.5px', color: 'var(--text-muted)', marginBottom: '28px' }}>
+            Interactive multimedia showcase of Shri Krishna's passion for Automotive Research, Classical Tabla, Culinary Arts, Gardening, and Governor Scouting.
           </p>
 
-          {/* Interactive Tabla & Music Rhythm Visualizer Widget */}
-          <div className="card" style={{ marginBottom: '32px', background: 'linear-gradient(135deg, rgba(192, 132, 252, 0.1) 0%, rgba(56, 189, 248, 0.05) 100%)', border: '1px solid var(--border-color)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-              <div>
-                <h3 style={{ fontSize: '18px', color: 'var(--text-bright)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <Music size={22} color="#c084fc" />
-                  <span>Interactive Tabla Rhythm & Beats Visualizer</span>
-                </h3>
-                <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px' }}>
-                  Tap any rhythm Taal beat below to play interactive pulse animation!
-                </p>
-              </div>
-
-              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                {['⚡ Carnatic Rock Fusion Groove', '🥁 Fast Drut Teental (Solo)', '🎸 Agam-Style Keherwa Rock', '🎼 Classical Jhaptal (10 Beats)', '🌺 Rupak Classical (7 Beats)'].map((taal) => (
-                  <button
-                    key={taal}
-                    onClick={() => playRhythmBeat(taal)}
-                    style={{
-                      background: activeTaal === taal ? '#c084fc' : 'var(--bg-card)',
-                      color: activeTaal === taal ? '#ffffff' : 'var(--text-bright)',
-                      border: '1px solid var(--border-color)',
-                      padding: '8px 14px',
-                      borderRadius: '20px',
-                      fontSize: '12.5px',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      transition: 'all 0.2s ease'
-                    }}
-                  >
-                    <Play size={13} fill={activeTaal === taal ? '#ffffff' : 'currentColor'} />
-                    <span>{taal}</span>
-                  </button>
-                ))}
-              </div>
+          {/* Interactive All-Hobbies Interactive Animation Stage */}
+          <div className="card" style={{
+            marginBottom: '36px',
+            background: 'linear-gradient(135deg, rgba(13, 19, 33, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%)',
+            border: '1px solid var(--border-color)',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+            padding: '28px'
+          }}>
+            {/* Hobby Selection Buttons */}
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '24px', borderBottom: '1px solid var(--border-color)', paddingBottom: '16px' }}>
+              {[
+                { id: 'car', label: '🏎️ Automotive Research', color: '#ff8c00' },
+                { id: 'tabla', label: '🥁 Classical Tabla & Beats', color: '#c084fc' },
+                { id: 'cook', label: '🍳 Culinary Arts & Cooking', color: '#ff5f56' },
+                { id: 'garden', label: '🌿 Gardening & Greenery', color: '#34d399' },
+                { id: 'scout', label: '🧭 Scouting & Trekking', color: '#38bdf8' }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setHobbyTab(tab.id as any)}
+                  style={{
+                    background: hobbyTab === tab.id ? tab.color : 'var(--bg-editor)',
+                    color: hobbyTab === tab.id ? '#ffffff' : 'var(--text-bright)',
+                    border: '1px solid var(--border-color)',
+                    padding: '9px 16px',
+                    borderRadius: '20px',
+                    fontSize: '13px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'all 0.25s ease',
+                    boxShadow: hobbyTab === tab.id ? `0 0 15px ${tab.color}66` : 'none'
+                  }}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
 
-            {/* Audio Wave Visualizer Bars */}
-            {activeTaal && (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '20px', height: '40px' }}>
-                {[40, 70, 100, 60, 90, 50, 80, 100, 65, 45, 85, 95].map((h, i) => (
+            {/* STAGE 1: AUTOMOTIVE RESEARCH */}
+            {hobbyTab === 'car' && (
+              <div style={{ textAlign: 'center', padding: '10px 0' }}>
+                <h3 style={{ fontSize: '20px', color: '#ff8c00', fontWeight: 800, marginBottom: '6px' }}>
+                  🏎️ Automotive Research & V8 Engine Speedometer
+                </h3>
+                <p style={{ fontSize: '13.5px', color: 'var(--text-muted)', marginBottom: '24px' }}>
+                  Tap the Rev Engine button below to trigger synthesized V8 twin-turbo exhaust rumble and high RPM needle sweep!
+                </p>
+
+                {/* Animated Speedometer Instrument Cluster */}
+                <div style={{
+                  width: '260px',
+                  height: '140px',
+                  margin: '0 auto 24px',
+                  position: 'relative',
+                  borderTopLeftRadius: '140px',
+                  borderTopRightRadius: '140px',
+                  background: 'radial-gradient(circle at bottom, rgba(255, 140, 0, 0.2) 0%, rgba(10, 15, 25, 0.9) 70%)',
+                  border: '3px solid #ff8c00',
+                  borderBottom: 'none',
+                  display: 'flex',
+                  alignItems: 'flex-end',
+                  justifyContent: 'center',
+                  boxShadow: isRevving ? '0 0 40px rgba(255, 140, 0, 0.6)' : '0 0 15px rgba(255, 140, 0, 0.2)',
+                  transition: 'all 0.3s ease'
+                }}>
+                  {/* Gauge Needle */}
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '0',
+                    left: '50%',
+                    width: '4px',
+                    height: '110px',
+                    background: '#ff5f56',
+                    transformOrigin: 'bottom center',
+                    transform: `translateX(-50%) rotate(${((rpmGauge / 8000) * 180) - 90}deg)`,
+                    transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                    boxShadow: '0 0 10px #ff5f56'
+                  }} />
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '-10px',
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    background: '#ffffff',
+                    boxShadow: '0 0 10px rgba(255,255,255,0.8)'
+                  }} />
+                  <div style={{ position: 'absolute', bottom: '15px', fontSize: '18px', fontWeight: 900, color: isRevving ? '#ff5f56' : '#ff8c00' }}>
+                    {rpmGauge} RPM
+                  </div>
+                </div>
+
+                <button
+                  onClick={playEngineRevSound}
+                  className="cms-btn"
+                  style={{
+                    background: 'linear-gradient(90deg, #ff8c00, #ff5f56)',
+                    padding: '12px 28px',
+                    fontSize: '14px',
+                    margin: '0 auto'
+                  }}
+                >
+                  <Play size={16} fill="currentColor" />
+                  <span>{isRevving ? '🔥 V8 Twin-Turbo Revving!' : '🚀 Press To Rev V8 Engine (Audio & Gauge)'}</span>
+                </button>
+              </div>
+            )}
+
+            {/* STAGE 2: CLASSICAL TABLA & BEATS */}
+            {hobbyTab === 'tabla' && (
+              <div>
+                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                  <h3 style={{ fontSize: '20px', color: '#c084fc', fontWeight: 800, marginBottom: '6px' }}>
+                    🥁 Classical Tabla (District Rank 9th Distinction) & Carnatic Fusion
+                  </h3>
+                  <p style={{ fontSize: '13.5px', color: 'var(--text-muted)' }}>
+                    Tap drums directly to trigger authentic Bayan Meend bass & Dayan syahi ring, or tap rhythm Taal presets!
+                  </p>
+                </div>
+
+                {/* Dual Interactive Drum Heads */}
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '32px', marginBottom: '24px' }}>
+                  {/* Bayan Left Drum */}
                   <div
-                    key={i}
+                    onClick={() => playTablaSound('dha')}
                     style={{
-                      width: '6px',
-                      height: `${h}%`,
-                      background: '#c084fc',
-                      borderRadius: '3px',
-                      animation: 'pulseGlow 0.6s infinite alternate ease-in-out',
-                      animationDelay: `${i * 0.08}s`
+                      width: '120px',
+                      height: '120px',
+                      borderRadius: '50%',
+                      background: 'radial-gradient(circle, #38bdf8 0%, #0284c7 60%, #0369a1 100%)',
+                      border: '6px solid #0f172a',
+                      boxShadow: '0 0 25px rgba(56, 189, 248, 0.4)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      transition: 'transform 0.1s ease'
                     }}
-                  />
-                ))}
+                    onMouseDown={(e) => (e.currentTarget.style.transform = 'scale(0.95)')}
+                    onMouseUp={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+                  >
+                    <div style={{ textAlign: 'center', color: '#ffffff', fontWeight: 900 }}>
+                      <div style={{ fontSize: '18px' }}>BAYAN</div>
+                      <div style={{ fontSize: '11px', opacity: 0.8 }}>Deep Bass "Dha"</div>
+                    </div>
+                  </div>
+
+                  {/* Dayan Right Drum */}
+                  <div
+                    onClick={() => playTablaSound('na')}
+                    style={{
+                      width: '100px',
+                      height: '100px',
+                      borderRadius: '50%',
+                      background: 'radial-gradient(circle, #c084fc 0%, #a855f7 60%, #7e22ce 100%)',
+                      border: '6px solid #0f172a',
+                      boxShadow: '0 0 25px rgba(192, 132, 252, 0.4)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      transition: 'transform 0.1s ease',
+                      marginTop: '10px'
+                    }}
+                    onMouseDown={(e) => (e.currentTarget.style.transform = 'scale(0.95)')}
+                    onMouseUp={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+                  >
+                    <div style={{ textAlign: 'center', color: '#ffffff', fontWeight: 900 }}>
+                      <div style={{ fontSize: '16px' }}>DAYAN</div>
+                      <div style={{ fontSize: '11px', opacity: 0.8 }}>Tuned "Na/Tin"</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Rhythm Taal Preset Buttons */}
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                  {['⚡ Carnatic Rock Fusion Groove', '🥁 Fast Drut Teental (Solo)', '🎸 Agam-Style Keherwa Rock', '🎼 Classical Jhaptal (10 Beats)', '🌺 Rupak Classical (7 Beats)'].map((taal) => (
+                    <button
+                      key={taal}
+                      onClick={() => playRhythmBeat(taal)}
+                      style={{
+                        background: activeTaal === taal ? '#c084fc' : 'var(--bg-card)',
+                        color: activeTaal === taal ? '#ffffff' : 'var(--text-bright)',
+                        border: '1px solid var(--border-color)',
+                        padding: '8px 14px',
+                        borderRadius: '20px',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}
+                    >
+                      <Play size={12} fill="currentColor" />
+                      <span>{taal}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* STAGE 3: CULINARY ARTS & COOKING */}
+            {hobbyTab === 'cook' && (
+              <div style={{ textAlign: 'center', padding: '10px 0' }}>
+                <h3 style={{ fontSize: '20px', color: '#ff5f56', fontWeight: 800, marginBottom: '6px' }}>
+                  🍳 Culinary Arts & Gourmet Spice Sizzler
+                </h3>
+                <p style={{ fontSize: '13.5px', color: 'var(--text-muted)', marginBottom: '24px' }}>
+                  Tap to sizzle gourmet spices on a hot skillet pan with interactive audio & steam particles!
+                </p>
+
+                <div style={{
+                  width: '160px',
+                  height: '160px',
+                  margin: '0 auto 24px',
+                  borderRadius: '50%',
+                  background: 'radial-gradient(circle, #1e293b 0%, #0f172a 100%)',
+                  border: isSizzling ? '4px solid #ff5f56' : '3px solid var(--border-color)',
+                  boxShadow: isSizzling ? '0 0 35px rgba(255, 95, 86, 0.6)' : 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  position: 'relative'
+                }}>
+                  <div style={{ fontSize: '54px' }}>{isSizzling ? '🥘' : '🍳'}</div>
+                  {isSizzling && (
+                    <div style={{ position: 'absolute', top: '-20px', fontSize: '24px', animation: 'pulseGlow 0.5s infinite alternate' }}>
+                      ♨️ 🧄 🌶️
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  onClick={playSizzleSound}
+                  className="cms-btn"
+                  style={{
+                    background: 'linear-gradient(90deg, #ff5f56, #ff8c00)',
+                    padding: '12px 28px',
+                    fontSize: '14px',
+                    margin: '0 auto'
+                  }}
+                >
+                  <Play size={16} fill="currentColor" />
+                  <span>{isSizzling ? '🔥 Sizzling Gourmet Spices!' : '👨‍🍳 Sizzle Spices on Skillet Pan (Audio)'}</span>
+                </button>
+              </div>
+            )}
+
+            {/* STAGE 4: GARDENING & AGRICULTURE */}
+            {hobbyTab === 'garden' && (
+              <div style={{ textAlign: 'center', padding: '10px 0' }}>
+                <h3 style={{ fontSize: '20px', color: '#34d399', fontWeight: 800, marginBottom: '6px' }}>
+                  🌿 Gardening & Agriculture Eco Growth
+                </h3>
+                <p style={{ fontSize: '13.5px', color: 'var(--text-muted)', marginBottom: '24px' }}>
+                  Tap below to water the plant and watch it bloom through 4 organic growth stages with chime audio!
+                </p>
+
+                <div style={{
+                  width: '150px',
+                  height: '150px',
+                  margin: '0 auto 20px',
+                  borderRadius: '24px',
+                  background: 'rgba(52, 211, 153, 0.1)',
+                  border: '2px solid #34d399',
+                  boxShadow: '0 0 25px rgba(52, 211, 153, 0.25)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '56px'
+                }}>
+                  {plantStage === 1 && '🌱'}
+                  {plantStage === 2 && '🌿'}
+                  {plantStage === 3 && '🌸'}
+                  {plantStage === 4 && '🌻'}
+                </div>
+
+                <div style={{ fontSize: '14px', color: '#34d399', fontWeight: 700, marginBottom: '20px' }}>
+                  Growth Stage {plantStage} of 4: {['Seedling', 'Foliage Growth', 'Flower Bloom', 'Full Harvest'][plantStage - 1]}
+                </div>
+
+                <button
+                  onClick={playGardenChime}
+                  className="cms-btn"
+                  style={{
+                    background: 'linear-gradient(90deg, #34d399, #059669)',
+                    padding: '12px 28px',
+                    fontSize: '14px',
+                    margin: '0 auto'
+                  }}
+                >
+                  <Play size={16} fill="currentColor" />
+                  <span>💧 Water Plant & Bloom Next Stage (Audio)</span>
+                </button>
+              </div>
+            )}
+
+            {/* STAGE 5: SCOUTING & TREKKING */}
+            {hobbyTab === 'scout' && (
+              <div style={{ textAlign: 'center', padding: '10px 0' }}>
+                <h3 style={{ fontSize: '20px', color: '#38bdf8', fontWeight: 800, marginBottom: '6px' }}>
+                  🧭 Rajya Puraskar Governor Scout Award & Outdoor Trekking
+                </h3>
+                <p style={{ fontSize: '13.5px', color: 'var(--text-muted)', marginBottom: '24px' }}>
+                  Tap below to rotate the magnetic compass needle and trigger the Governor Award triumph chime!
+                </p>
+
+                <div style={{
+                  width: '150px',
+                  height: '150px',
+                  margin: '0 auto 20px',
+                  borderRadius: '50%',
+                  background: 'radial-gradient(circle, #0284c7 0%, #0c4a6e 100%)',
+                  border: '4px solid #38bdf8',
+                  boxShadow: '0 0 30px rgba(56, 189, 248, 0.4)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  position: 'relative'
+                }}>
+                  <div style={{
+                    fontSize: '48px',
+                    transform: `rotate(${compassAngle}deg)`,
+                    transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                  }}>
+                    🧭
+                  </div>
+                </div>
+
+                <div style={{ fontSize: '13.5px', color: '#38bdf8', fontWeight: 700, marginBottom: '20px' }}>
+                  Heading Angle: {compassAngle % 360}° North-East • Rajya Puraskar Governor Scout
+                </div>
+
+                <button
+                  onClick={playScoutChime}
+                  className="cms-btn"
+                  style={{
+                    background: 'linear-gradient(90deg, #38bdf8, #818cf8)',
+                    padding: '12px 28px',
+                    fontSize: '14px',
+                    margin: '0 auto'
+                  }}
+                >
+                  <Play size={16} fill="currentColor" />
+                  <span>🧭 Rotate Compass & Trigger Triumph Chime</span>
+                </button>
               </div>
             )}
           </div>
