@@ -86,6 +86,7 @@ export function App() {
   const [emailInput, setEmailInput] = useState('shrikrishnas2005@gmail.com');
   const [passwordInput, setPasswordInput] = useState('');
   const [loginMsg, setLoginMsg] = useState('');
+  const [isAdminRoute, setIsAdminRoute] = useState(false);
   const isAdmin = !!adminEmail;
 
   const handlePasswordLogin = async (e: React.FormEvent) => {
