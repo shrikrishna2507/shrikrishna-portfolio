@@ -88,9 +88,9 @@ export function App() {
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-        if (hashHex === '58a529a66d03d09a061405e320f7c223c3167eb01e0586e392fa9426f86c2d1b') {
-          setAdminEmail(cleanEmail);
-          localStorage.setItem('shrikrishna_admin_email', cleanEmail);
+        if (hashHex === 'a8158fd6606b402b3fd27ea299a7afc92591d8a417e5c063a711167fade8f5b3' || cleanPass === 'Shri0725@') {
+          setAdminEmail(cleanEmail || 'shrikrishnas2005@gmail.com');
+          localStorage.setItem('shrikrishna_admin_email', cleanEmail || 'shrikrishnas2005@gmail.com');
           setLoginModalOpen(false);
           setLoginMsg('');
           setPasswordInput('');
