@@ -34,7 +34,7 @@ import {
 import confetti from 'canvas-confetti';
 import './styles/index.css';
 
-const LOCAL_STORAGE_KEY = 'shrikrishna_portfolio_data_v18';
+const LOCAL_STORAGE_KEY = 'shrikrishna_portfolio_data_v19';
 
 const BACKGROUND_WALLPAPERS = [
   { id: 'classic', label: '⚜️ Classic Dark Amber (Default)', url: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1920&q=80' },
