@@ -34,7 +34,7 @@ import {
 import confetti from 'canvas-confetti';
 import './styles/index.css';
 
-const LOCAL_STORAGE_KEY = 'shrikrishna_portfolio_data_v19';
+const LOCAL_STORAGE_KEY = 'shrikrishna_portfolio_data_v20';
 
 const BACKGROUND_WALLPAPERS = [
   { id: 'classic', label: '⚜️ Classic Dark Amber (Default)', url: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1920&q=80' },
@@ -49,7 +49,20 @@ export function App() {
   const [data, setData] = useState<ProfileData>(() => {
     try {
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (
+          parsed && 
+          typeof parsed === 'object' &&
+          Array.isArray(parsed.projects) && 
+          Array.isArray(parsed.certifications) && 
+          Array.isArray(parsed.achievements) &&
+          parsed.skills &&
+          Array.isArray(parsed.skills.languages)
+        ) {
+          return parsed;
+        }
+      }
     } catch (e) {
       console.error('Failed to load saved profile data', e);
     }
