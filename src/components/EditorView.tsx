@@ -1063,13 +1063,38 @@ export const EditorView: React.FC<EditorViewProps> = ({
       return (
         <div style={{ maxWidth: '960px', margin: '0 auto' }}>
           <h1 style={{ fontSize: '30px', color: 'var(--text-bright)', marginBottom: '8px' }}>
-            Hobbies & Interactive Creative Hub
+            Hobbies & Personal Interests
           </h1>
-          <p style={{ fontSize: '14.5px', color: 'var(--text-muted)', marginBottom: '28px' }}>
-            Interactive multimedia showcase of Shri Krishna's passion for Automotive Research, Classical Tabla, Culinary Arts, Gardening, and Governor Scouting.
+          <p style={{ fontSize: '14.5px', color: 'var(--text-muted)', marginBottom: '32px' }}>
+            Automotive vehicle research, classical & fusion music, culinary arts, gardening, and outdoor exploration.
           </p>
 
-          {/* Interactive All-Hobbies Interactive Animation Stage */}
+          {/* 1. Hobby Description Cards First */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '22px', marginBottom: '36px' }}>
+            {data.hobbies?.map((hob) => (
+              <div key={hob.id} className="card" style={{ display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '14px' }}>
+                  <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'var(--accent-glow)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {getHobbyIcon(hob.iconName)}
+                  </div>
+                  <div>
+                    <h3 style={{ fontSize: '17px', color: 'var(--text-bright)', fontWeight: 800 }}>
+                      {hob.title}
+                    </h3>
+                    <div style={{ fontSize: '12px', color: 'var(--accent-color)', fontWeight: 600 }}>
+                      {hob.category}
+                    </div>
+                  </div>
+                </div>
+
+                <p style={{ fontSize: '14px', color: 'var(--text-main)', lineHeight: 1.6, flex: 1 }}>
+                  {hob.description}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* 2. Interactive Multimedia Animation Hub Second */}
           <div className="card" style={{
             marginBottom: '36px',
             background: 'linear-gradient(135deg, rgba(13, 19, 33, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%)',
@@ -1077,6 +1102,15 @@ export const EditorView: React.FC<EditorViewProps> = ({
             boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
             padding: '28px'
           }}>
+            <div style={{ marginBottom: '20px' }}>
+              <h2 style={{ fontSize: '20px', color: 'var(--text-bright)', fontWeight: 800, marginBottom: '4px' }}>
+                🎮 Interactive Hobbies Animation & Multimedia Studio
+              </h2>
+              <p style={{ fontSize: '13.5px', color: 'var(--text-muted)' }}>
+                Select any hobby below to trigger interactive audio visualizers, gauge sweeps, sizzlers, plant blooms, and compass rotators!
+              </p>
+            </div>
+
             {/* Hobby Selection Buttons */}
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '24px', borderBottom: '1px solid var(--border-color)', paddingBottom: '16px' }}>
               {[
@@ -1418,30 +1452,6 @@ export const EditorView: React.FC<EditorViewProps> = ({
                 </button>
               </div>
             )}
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '22px' }}>
-            {data.hobbies?.map((hob) => (
-              <div key={hob.id} className="card" style={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '14px' }}>
-                  <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'var(--accent-glow)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {getHobbyIcon(hob.iconName)}
-                  </div>
-                  <div>
-                    <h3 style={{ fontSize: '17px', color: 'var(--text-bright)', fontWeight: 800 }}>
-                      {hob.title}
-                    </h3>
-                    <div style={{ fontSize: '12px', color: 'var(--accent-color)', fontWeight: 600 }}>
-                      {hob.category}
-                    </div>
-                  </div>
-                </div>
-
-                <p style={{ fontSize: '14px', color: 'var(--text-main)', lineHeight: 1.6, flex: 1 }}>
-                  {hob.description}
-                </p>
-              </div>
-            ))}
           </div>
         </div>
       );
