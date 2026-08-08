@@ -109,10 +109,10 @@ export function App() {
     }
   }, [data]);
 
-  // Check URL hash #admin for separate admin edit entrance
+  // Check URL hash #vascodigama for secret admin edit entrance
   useEffect(() => {
     const checkAdminHash = () => {
-      if (window.location.hash === '#admin' || window.location.search.includes('edit=true')) {
+      if (window.location.hash === '#vascodigama' || window.location.search.includes('edit=true')) {
         setLoginModalOpen(true);
       }
     };
@@ -414,7 +414,7 @@ export function App() {
                     <Edit3 size={14} />
                     <span>Edit / CMS</span>
                   </button>
-                ) : (window.location.hash === '#admin' || window.location.search.includes('edit=true')) ? (
+                ) : (window.location.hash === '#vascodigama' || window.location.search.includes('edit=true')) ? (
                   <button 
                     onClick={() => setLoginModalOpen(true)}
                     style={{
