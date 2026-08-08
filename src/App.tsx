@@ -127,6 +127,9 @@ export function App() {
         if (hashHex === '5ec1236f9ff1074ebe6a07b6e56cf2fe22ef05a061df4c253db8330ae83a4917' || hashVal === 'vascodigama') {
           setIsAdminRoute(true);
           setLoginModalOpen(true);
+        } else {
+          setIsAdminRoute(false);
+          setLoginModalOpen(false);
         }
       } catch (e) {
         console.error('Secret route check error:', e);
