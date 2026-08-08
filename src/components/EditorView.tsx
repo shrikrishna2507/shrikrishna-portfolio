@@ -1143,61 +1143,62 @@ export const EditorView: React.FC<EditorViewProps> = ({
               ))}
             </div>
 
-            {/* STAGE 1: AUTOMOTIVE RESEARCH & MOVING CAR ANIMATION */}
+            {/* STAGE 1: AUTOMOTIVE RESEARCH & FORWARD MOVING CAR */}
             {hobbyTab === 'car' && (
               <div style={{ textAlign: 'center', padding: '10px 0' }}>
                 <h3 style={{ fontSize: '20px', color: '#ff8c00', fontWeight: 800, marginBottom: '6px' }}>
-                  🏎️ Moving Car & V8 Engine Speedometer
+                  🏎️ Forward Driving Sports Car & V8 Engine Speedometer
                 </h3>
                 <p style={{ fontSize: '13.5px', color: 'var(--text-muted)', marginBottom: '20px' }}>
-                  Watch the car drive along the animated highway track and tap Rev Engine for V8 motor exhaust sound!
+                  Watch the car drive forward down the highway track and tap Rev Engine for V8 motor exhaust sound!
                 </p>
 
-                {/* Animated Highway Track with Moving Stripes */}
+                {/* Animated Highway Track with Moving Lane Markings */}
                 <div style={{
                   width: '100%',
-                  maxWidth: '520px',
-                  height: '110px',
+                  maxWidth: '540px',
+                  height: '115px',
                   margin: '0 auto 20px',
                   borderRadius: '16px',
-                  background: '#090d16',
+                  background: 'linear-gradient(180deg, #090d16 0%, #111827 100%)',
                   border: '2px solid #ff8c00',
                   position: 'relative',
                   overflow: 'hidden',
-                  boxShadow: '0 0 25px rgba(255, 140, 0, 0.25)',
+                  boxShadow: '0 0 30px rgba(255, 140, 0, 0.3)',
                   display: 'flex',
                   alignItems: 'center'
                 }}>
-                  {/* Road Center Stripes */}
+                  {/* Road Center Line */}
                   <div style={{
                     position: 'absolute',
                     top: '50%',
                     left: 0,
                     right: 0,
                     height: '4px',
-                    borderTop: '3px dashed #ff8c00',
-                    opacity: 0.6,
+                    borderTop: '4px dashed #ff8c00',
+                    opacity: 0.7,
                     transform: 'translateY(-50%)'
                   }} />
 
-                  {/* Moving Sports Car Container */}
+                  {/* Sports Car (Flipped scaleX(-1) so it drives forward facing Right!) */}
                   <div style={{
-                    fontSize: '46px',
+                    fontSize: '48px',
                     position: 'absolute',
-                    left: isDriving ? '75%' : '20%',
+                    left: isDriving ? '75%' : '15%',
                     transition: 'left 1s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                    filter: 'drop-shadow(0 0 12px #ff8c00)'
+                    transform: 'scaleX(-1)',
+                    filter: 'drop-shadow(0 0 14px #ff8c00)'
                   }}>
                     🏎️
                   </div>
 
-                  {/* Headlight Beam Effect */}
+                  {/* Headlight Beam Effect Facing Right */}
                   <div style={{
                     position: 'absolute',
-                    left: isDriving ? '85%' : '30%',
-                    width: '60px',
-                    height: '40px',
-                    background: 'radial-gradient(ellipse at left, rgba(255, 230, 0, 0.5) 0%, rgba(255, 230, 0, 0) 70%)',
+                    left: isDriving ? '85%' : '25%',
+                    width: '70px',
+                    height: '45px',
+                    background: 'radial-gradient(ellipse at left, rgba(255, 230, 0, 0.6) 0%, rgba(255, 230, 0, 0) 75%)',
                     transition: 'left 1s cubic-bezier(0.34, 1.56, 0.64, 1)'
                   }} />
                 </div>
@@ -1230,13 +1231,13 @@ export const EditorView: React.FC<EditorViewProps> = ({
                       fontSize: '13.5px'
                     }}
                   >
-                    <span>{isDriving ? '🛑 Brake & Park Car' : '🏎️ Drive Car Down Highway Track'}</span>
+                    <span>{isDriving ? '🛑 Brake & Park Car' : '🏎️ Drive Car Forward Down Highway Track'}</span>
                   </button>
                 </div>
               </div>
             )}
 
-            {/* STAGE 2: CLASSICAL TABLA & BEATS (SINGLE SIGNATURE TUNE) */}
+            {/* STAGE 2: CLASSICAL TABLA (SINGLE SIGNATURE TUNE) */}
             {hobbyTab === 'tabla' && (
               <div>
                 <div style={{ textAlign: 'center', marginBottom: '20px' }}>
@@ -1328,15 +1329,50 @@ export const EditorView: React.FC<EditorViewProps> = ({
               </div>
             )}
 
-            {/* STAGE 3: CULINARY ARTS & FULL COOKING PREPARATION GUIDE */}
+            {/* STAGE 3: CULINARY ARTS & ANIMATED SKILLET COOKING GUIDE */}
             {hobbyTab === 'cook' && (
               <div style={{ textAlign: 'center', padding: '10px 0' }}>
                 <h3 style={{ fontSize: '20px', color: '#ff5f56', fontWeight: 800, marginBottom: '6px' }}>
-                  🍳 Culinary Arts & South Canara Gourmet Cooking Guide
+                  🍳 Animated Gourmet Skillet Cooking Studio & Recipe Guide
                 </h3>
                 <p style={{ fontSize: '13.5px', color: 'var(--text-muted)', marginBottom: '20px' }}>
-                  Shri Krishna's Signature Recipe: "South Canara Spiced Ghee Roast Paneer" (Step-by-Step Preparation Guide)
+                  Shri Krishna's Signature Recipe: "South Canara Spiced Ghee Roast Paneer"
                 </p>
+
+                {/* Animated Skillet Cooking Pan Graphics */}
+                <div style={{
+                  width: '180px',
+                  height: '180px',
+                  margin: '0 auto 20px',
+                  borderRadius: '50%',
+                  background: 'radial-gradient(circle, #1e293b 0%, #0f172a 100%)',
+                  border: isSizzling ? '5px solid #ff5f56' : '3px solid var(--border-color)',
+                  boxShadow: isSizzling ? '0 0 40px rgba(255, 95, 86, 0.7)' : '0 0 15px rgba(255, 95, 86, 0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  position: 'relative',
+                  transition: 'all 0.3s ease'
+                }}>
+                  {/* Floating Steam & Spice Particles */}
+                  <div style={{ fontSize: '56px' }}>
+                    {cookingStep === 1 && '🔪'}
+                    {cookingStep === 2 && '🧄'}
+                    {cookingStep === 3 && (isSizzling ? '🥘' : '🍳')}
+                    {cookingStep === 4 && '🍽️'}
+                  </div>
+
+                  {isSizzling && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '-25px',
+                      fontSize: '26px',
+                      animation: 'pulseGlow 0.4s infinite alternate'
+                    }}>
+                      ♨️ 🧄 🌶️ 🧈
+                    </div>
+                  )}
+                </div>
 
                 {/* Step Progress Tracker */}
                 <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '20px' }}>
@@ -1360,7 +1396,7 @@ export const EditorView: React.FC<EditorViewProps> = ({
                   ))}
                 </div>
 
-                {/* Interactive Cooking Card */}
+                {/* Interactive Recipe Guide Card */}
                 <div className="card" style={{ maxWidth: '520px', margin: '0 auto 20px', textAlign: 'left', border: '1px solid #ff5f56' }}>
                   {cookingStep === 1 && (
                     <div>
@@ -1475,40 +1511,56 @@ export const EditorView: React.FC<EditorViewProps> = ({
               </div>
             )}
 
-            {/* STAGE 5: SCOUTING & TREKKING */}
+            {/* STAGE 5: SCOUTING & OUTDOOR TREKKING EXHIBITION */}
             {hobbyTab === 'scout' && (
               <div style={{ textAlign: 'center', padding: '10px 0' }}>
                 <h3 style={{ fontSize: '20px', color: '#38bdf8', fontWeight: 800, marginBottom: '6px' }}>
-                  🧭 Rajya Puraskar Governor Scout Award & Outdoor Trekking
+                  🧭 Rajya Puraskar Governor Scout & Mountain Trekking Trail
                 </h3>
                 <p style={{ fontSize: '13.5px', color: 'var(--text-muted)', marginBottom: '20px' }}>
-                  Tap below to rotate the magnetic compass needle and trigger the Governor Award triumph chime!
+                  Explore the outdoor mountain trekking trail and Governor Award Scouting Badge exhibition!
                 </p>
 
+                {/* Outdoor Mountain Trekking Trail Container */}
                 <div style={{
-                  width: '150px',
-                  height: '150px',
+                  width: '100%',
+                  maxWidth: '520px',
+                  height: '120px',
                   margin: '0 auto 20px',
-                  borderRadius: '50%',
-                  background: 'radial-gradient(circle, #0284c7 0%, #0c4a6e 100%)',
-                  border: '4px solid #38bdf8',
-                  boxShadow: '0 0 30px rgba(56, 189, 248, 0.4)',
+                  borderRadius: '16px',
+                  background: 'linear-gradient(180deg, #0c4a6e 0%, #0369a1 100%)',
+                  border: '2px solid #38bdf8',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  boxShadow: '0 0 30px rgba(56, 189, 248, 0.3)',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative'
+                  justifyContent: 'space-around',
+                  padding: '0 20px'
                 }}>
-                  <div style={{
-                    fontSize: '48px',
-                    transform: `rotate(${compassAngle}deg)`,
-                    transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)'
-                  }}>
-                    🧭
+                  <div style={{ fontSize: '38px', textAlign: 'center' }}>
+                    <div>🧭</div>
+                    <div style={{ fontSize: '10px', color: '#ffffff', fontWeight: 700 }}>Compass</div>
+                  </div>
+
+                  <div style={{ fontSize: '38px', textAlign: 'center' }}>
+                    <div>⛺</div>
+                    <div style={{ fontSize: '10px', color: '#ffffff', fontWeight: 700 }}>Campground</div>
+                  </div>
+
+                  <div style={{ fontSize: '38px', textAlign: 'center' }}>
+                    <div>⛰️</div>
+                    <div style={{ fontSize: '10px', color: '#ffffff', fontWeight: 700 }}>Peak Summit</div>
+                  </div>
+
+                  <div style={{ fontSize: '38px', textAlign: 'center' }}>
+                    <div>🎖️</div>
+                    <div style={{ fontSize: '10px', color: '#ffffff', fontWeight: 700 }}>Rajya Puraskar</div>
                   </div>
                 </div>
 
                 <div style={{ fontSize: '13.5px', color: '#38bdf8', fontWeight: 700, marginBottom: '20px' }}>
-                  Heading Angle: {compassAngle % 360}° North-East • Rajya Puraskar Governor Scout
+                  Governor Rajya Puraskar Awardee • Outdoor Wilderness Exploration & Camping
                 </div>
 
                 <button
@@ -1522,7 +1574,7 @@ export const EditorView: React.FC<EditorViewProps> = ({
                   }}
                 >
                   <Play size={15} fill="currentColor" />
-                  <span>🧭 Rotate Compass & Trigger Triumph Chime</span>
+                  <span>🎖️ Inspect Rajya Puraskar Badge & Trigger Triumph Chime</span>
                 </button>
               </div>
             )}
