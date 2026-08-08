@@ -76,20 +76,31 @@ export function App() {
 
   const isAdmin = adminEmail === 'shrikrishnas2005@gmail.com' || adminEmail === '4mt23cs194@mite.ac.in';
 
-  const handlePasswordLogin = (e: React.FormEvent) => {
+  const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanEmail = emailInput.trim().toLowerCase();
     const cleanPass = passwordInput.trim();
 
-    if ((cleanEmail === 'shrikrishnas2005@gmail.com' || cleanEmail === '4mt23cs194@mite.ac.in') && cleanPass === 'Shri0725@') {
-      setAdminEmail(cleanEmail);
-      localStorage.setItem('shrikrishna_admin_email', cleanEmail);
-      setLoginModalOpen(false);
-      setLoginMsg('');
-      setPasswordInput('');
-    } else {
-      setLoginMsg('Invalid Email or Password. Only shrikrishnas2005@gmail.com with master password can unlock CMS.');
+    if (cleanEmail === 'shrikrishnas2005@gmail.com' || cleanEmail === '4mt23cs194@mite.ac.in') {
+      try {
+        const msgUint8 = new TextEncoder().encode(cleanPass);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        if (hashHex === '58a529a66d03d09a061405e320f7c223c3167eb01e0586e392fa9426f86c2d1b') {
+          setAdminEmail(cleanEmail);
+          localStorage.setItem('shrikrishna_admin_email', cleanEmail);
+          setLoginModalOpen(false);
+          setLoginMsg('');
+          setPasswordInput('');
+          return;
+        }
+      } catch (err) {
+        console.error('Crypto error:', err);
+      }
     }
+    setLoginMsg('Invalid Email or Password. Only owner credentials can unlock CMS.');
   };
 
   const handleLogout = () => {
@@ -109,6 +120,18 @@ export function App() {
     }
   }, [data]);
 
+  // Check URL hash #admin for separate admin edit entrance
+  useEffect(() => {
+    const checkAdminHash = () => {
+      if (window.location.hash === '#admin' || window.location.search.includes('edit=true')) {
+        setLoginModalOpen(true);
+      }
+    };
+    checkAdminHash();
+    window.addEventListener('hashchange', checkAdminHash);
+    return () => window.removeEventListener('hashchange', checkAdminHash);
+  }, []);
+
   // Close settings dropdown on click outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -118,9 +141,9 @@ export function App() {
       }
     };
     if (settingsOpen) {
-      document.addEventListener('click', handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
     }
-    return () => document.removeEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [settingsOpen]);
 
   const handleSelectFile = (fileId: FileId) => {
@@ -179,9 +202,9 @@ export function App() {
   const navItems: { id: FileId; label: string; icon: React.ReactNode }[] = [
     { id: 'home.tsx', label: 'Overview', icon: <User size={15} /> },
     { id: 'about.html', label: 'About & Education', icon: <GraduationCap size={15} /> },
-    { id: 'projects.jsx', label: 'Projects (7)', icon: <FolderGit2 size={15} /> },
-    { id: 'certificates.md', label: 'Certificates (7)', icon: <ShieldCheck size={15} /> },
-    { id: 'achievements.json', label: 'Awards (5)', icon: <Award size={15} /> },
+    { id: 'projects.jsx', label: `Projects (${data.projects.length})`, icon: <FolderGit2 size={15} /> },
+    { id: 'certificates.md', label: `Certificates (${data.certifications.length})`, icon: <ShieldCheck size={15} /> },
+    { id: 'achievements.json', label: `Awards (${data.achievements.length})`, icon: <Award size={15} /> },
     { id: 'hobbies.ts', label: 'Hobbies', icon: <Heart size={15} /> },
     { id: 'leetcode.ts', label: 'LeetCode (75)', icon: <Flame size={15} /> },
     { id: 'contact.css', label: 'Contact', icon: <Mail size={15} /> }
@@ -232,7 +255,7 @@ export function App() {
                 </div>
               </div>
 
-              <nav style={{ display: 'flex', gap: '4px' }}>
+              <nav className="titlebar-nav" style={{ display: 'flex', gap: '4px' }}>
                 {navItems.map((item) => (
                   <button
                     key={item.id}

@@ -73,10 +73,67 @@ export const EditorView: React.FC<EditorViewProps> = ({
     });
   };
 
+  const playTablaSound = (type: 'dha' | 'dhin' | 'tin' | 'na' | 'ge') => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      const now = ctx.currentTime;
+
+      if (type === 'dha' || type === 'ge') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.exponentialRampToValueAtTime(55, now + 0.35);
+        gain.gain.setValueAtTime(0.9, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+        osc.start(now);
+        osc.stop(now + 0.4);
+      } else if (type === 'dhin') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(190, now);
+        osc.frequency.exponentialRampToValueAtTime(80, now + 0.28);
+        gain.gain.setValueAtTime(0.8, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+        osc.start(now);
+        osc.stop(now + 0.32);
+      } else {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(340, now);
+        osc.frequency.exponentialRampToValueAtTime(240, now + 0.16);
+        gain.gain.setValueAtTime(0.6, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        osc.start(now);
+        osc.stop(now + 0.2);
+      }
+    } catch (e) {
+      console.log('Web Audio error:', e);
+    }
+  };
+
   const playRhythmBeat = (taalName: string) => {
     setActiveTaal(taalName);
     triggerConfetti();
-    setTimeout(() => setActiveTaal(null), 2500);
+
+    const patternMap: Record<string, Array<'dha' | 'dhin' | 'tin' | 'na' | 'ge'>> = {
+      'Teental (16 Beats)': ['dha', 'dhin', 'dhin', 'dha', 'dha', 'dhin', 'dhin', 'dha', 'dha', 'tin', 'tin', 'na', 'na', 'dhin', 'dhin', 'dha'],
+      'Keherwa (8 Beats)': ['dha', 'ge', 'na', 'tin', 'na', 'ge', 'dhin', 'na'],
+      'Dadra (6 Beats)': ['dha', 'dhin', 'na', 'dha', 'tin', 'na'],
+      'Rupak (7 Beats)': ['tin', 'tin', 'na', 'dhin', 'na', 'dhin', 'na']
+    };
+
+    const sequence = patternMap[taalName] || ['dha', 'dhin', 'tin', 'na'];
+    sequence.forEach((stroke, idx) => {
+      setTimeout(() => {
+        playTablaSound(stroke);
+      }, idx * 260);
+    });
+
+    setTimeout(() => setActiveTaal(null), sequence.length * 260 + 500);
   };
 
   const filteredProjects = data.projects.filter(p => {
@@ -150,12 +207,12 @@ export const EditorView: React.FC<EditorViewProps> = ({
                   {data.tagline}
                 </p>
 
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                <div className="home-hero-buttons" style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
                   <button
                     onClick={() => onSelectFile('projects.jsx')}
                     className="cms-btn"
                     style={{
-                      padding: '11px 24px',
+                      padding: '11px 22px',
                       fontSize: '14px',
                       borderRadius: '10px'
                     }}
@@ -170,7 +227,7 @@ export const EditorView: React.FC<EditorViewProps> = ({
                       background: 'var(--bg-hover)',
                       color: 'var(--text-bright)',
                       border: '1px solid var(--border-color)',
-                      padding: '11px 22px',
+                      padding: '11px 20px',
                       borderRadius: '10px',
                       fontWeight: 700,
                       fontSize: '14px',
@@ -184,6 +241,26 @@ export const EditorView: React.FC<EditorViewProps> = ({
                     <ChevronRight size={16} />
                   </button>
 
+                  <button
+                    onClick={() => onOpenImageModal('/assets/Shrikrishna_Resume.pdf')}
+                    style={{
+                      background: 'var(--bg-card)',
+                      color: 'var(--text-bright)',
+                      border: '1px solid var(--border-color)',
+                      padding: '11px 20px',
+                      borderRadius: '10px',
+                      fontWeight: 700,
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    <Maximize2 size={16} color="var(--accent-color)" />
+                    <span>View Resume PDF</span>
+                  </button>
+
                   <a
                     href="/assets/Shrikrishna_Resume.pdf"
                     download="Shrikrishna_S_Bhat_Resume.pdf"
@@ -194,7 +271,7 @@ export const EditorView: React.FC<EditorViewProps> = ({
                       background: 'transparent',
                       color: 'var(--accent-color)',
                       border: '1px solid var(--accent-color)',
-                      padding: '11px 22px',
+                      padding: '11px 20px',
                       borderRadius: '10px',
                       fontWeight: 700,
                       fontSize: '14px',
@@ -206,7 +283,7 @@ export const EditorView: React.FC<EditorViewProps> = ({
                     }}
                   >
                     <Download size={16} />
-                    <span>Download Resume PDF</span>
+                    <span>Download PDF</span>
                   </a>
                 </div>
               </div>
