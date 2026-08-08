@@ -490,21 +490,22 @@ export function App() {
             </main>
           </div>
 
-        {/* Status Bar */}
-        <StatusBar 
-          data={data}
-          activeFile={activeSection}
-          theme={theme}
-          onToggleCms={() => {
-            if (isAdmin) {
-              setCmsSection('profile');
-              setCmsOpen(true);
-            } else {
-              setLoginModalOpen(true);
-            }
-          }}
-          onToggleTerminal={() => setTerminalOpen(!terminalOpen)}
-        />
+        {/* Executive Clean Footer */}
+        <footer style={{
+          textAlign: 'center',
+          padding: '20px 24px',
+          color: 'var(--text-muted)',
+          fontSize: '13px',
+          borderTop: '1px solid var(--border-color)',
+          background: 'var(--bg-titlebar)',
+          backdropFilter: 'blur(20px)',
+          marginTop: 'auto'
+        }}>
+          <div>© {new Date().getFullYear()} {data.name} • Mangalore Institute of Technology and Engineering (MITE)</div>
+          <div style={{ fontSize: '11.5px', color: 'var(--accent-color)', marginTop: '4px', fontWeight: 600 }}>
+            Full-Stack & Computer Science Portfolio • Built with React.js & TypeScript
+          </div>
+        </footer>
 
         {/* Settings Wallpaper Selection Modal */}
         {bgModalOpen && (
