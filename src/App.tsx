@@ -70,6 +70,7 @@ export function App() {
   const [imageModalSrc, setImageModalSrc] = useState<string | null>(null);
   const [adminEmail, setAdminEmail] = useState<string | null>(() => localStorage.getItem('shrikrishna_admin_email'));
   const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [emailInput, setEmailInput] = useState('shrikrishnas2005@gmail.com');
   const [passwordInput, setPasswordInput] = useState('');
   const [loginMsg, setLoginMsg] = useState('');
   const isAdmin = !!adminEmail;
