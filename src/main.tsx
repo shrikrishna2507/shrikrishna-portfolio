@@ -17,8 +17,13 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
   }
 
   handleReset = () => {
-    localStorage.clear();
-    window.location.reload();
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+    } catch (e) {
+      console.error(e);
+    }
+    window.location.href = window.location.origin + window.location.pathname;
   };
 
   render() {

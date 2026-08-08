@@ -136,21 +136,21 @@ export const EditorView: React.FC<EditorViewProps> = ({
     setTimeout(() => setActiveTaal(null), sequence.length * 260 + 500);
   };
 
-  const filteredProjects = data.projects.filter(p => {
+  const filteredProjects = (data?.projects || []).filter(p => {
     const matchesSearch = p.title.toLowerCase().includes(projectSearch.toLowerCase()) || 
                           p.description.toLowerCase().includes(projectSearch.toLowerCase()) ||
-                          p.tech.some(t => t.toLowerCase().includes(projectSearch.toLowerCase()));
+                          (p.tech || []).some(t => t.toLowerCase().includes(projectSearch.toLowerCase()));
     if (!matchesSearch) return false;
 
     if (projectFilter === 'All') return true;
-    if (projectFilter === 'ML & AI') return p.tech.some(t => t.includes('Machine Learning') || t.includes('Computer Vision') || t.includes('OpenCV'));
-    if (projectFilter === 'Full-Stack') return p.tech.some(t => t.includes('React') || t.includes('Express') || t.includes('Node') || t.includes('HTML'));
-    if (projectFilter === 'Python & Logic') return p.tech.some(t => t.includes('Python') || t.includes('Algorithmic'));
-    if (projectFilter === 'IoT') return p.tech.some(t => t.includes('Arduino') || t.includes('Sensors'));
+    if (projectFilter === 'ML & AI') return (p.tech || []).some(t => t.includes('Machine Learning') || t.includes('Computer Vision') || t.includes('OpenCV'));
+    if (projectFilter === 'Full-Stack') return (p.tech || []).some(t => t.includes('React') || t.includes('Express') || t.includes('Node') || t.includes('HTML'));
+    if (projectFilter === 'Python & Logic') return (p.tech || []).some(t => t.includes('Python') || t.includes('Algorithmic'));
+    if (projectFilter === 'IoT') return (p.tech || []).some(t => t.includes('Arduino') || t.includes('Sensors'));
     return true;
   });
 
-  const filteredCerts = data.certifications.filter(c => 
+  const filteredCerts = (data?.certifications || []).filter(c => 
     c.title.toLowerCase().includes(certSearch.toLowerCase()) ||
     c.issuer.toLowerCase().includes(certSearch.toLowerCase()) ||
     (c.details && c.details.toLowerCase().includes(certSearch.toLowerCase()))
@@ -385,19 +385,19 @@ export const EditorView: React.FC<EditorViewProps> = ({
               <div>
                 <div style={{ fontSize: '13px', color: 'var(--text-keyword)', fontWeight: 700, marginBottom: '10px' }}>Core Languages</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {data.skills.languages.map((sk, i) => <span key={i} className="badge">{sk}</span>)}
+                  {(data?.skills?.languages || []).map((sk, i) => <span key={i} className="badge">{sk}</span>)}
                 </div>
               </div>
               <div>
                 <div style={{ fontSize: '13px', color: 'var(--text-keyword)', fontWeight: 700, marginBottom: '10px' }}>Web Technologies</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {data.skills.webDev.map((sk, i) => <span key={i} className="badge">{sk}</span>)}
+                  {(data?.skills?.webDev || []).map((sk, i) => <span key={i} className="badge">{sk}</span>)}
                 </div>
               </div>
               <div>
                 <div style={{ fontSize: '13px', color: 'var(--text-keyword)', fontWeight: 700, marginBottom: '10px' }}>Machine Learning & Databases</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {[...data.skills.mlAi, ...data.skills.databases].map((sk, i) => <span key={i} className="badge">{sk}</span>)}
+                  {[...(data?.skills?.mlAi || []), ...(data?.skills?.databases || [])].map((sk, i) => <span key={i} className="badge">{sk}</span>)}
                 </div>
               </div>
             </div>
@@ -431,7 +431,7 @@ export const EditorView: React.FC<EditorViewProps> = ({
             </h2>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {data.education.map((edu) => (
+              {(data?.education || []).map((edu) => (
                 <div key={edu.id} className="card">
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' }}>
                     <div>
