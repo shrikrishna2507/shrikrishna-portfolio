@@ -425,7 +425,7 @@ export function App() {
                     <Edit3 size={14} />
                     <span>Edit / CMS</span>
                   </button>
-                ) : (
+                ) : (window.location.hash === '#admin' || window.location.search.includes('edit=true')) ? (
                   <button 
                     onClick={() => setLoginModalOpen(true)}
                     style={{
@@ -445,7 +445,7 @@ export function App() {
                   >
                     <span>🔒 Owner Login</span>
                   </button>
-                )}
+                ) : null}
               </div>
             </header>
 
