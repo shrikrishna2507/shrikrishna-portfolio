@@ -74,33 +74,22 @@ export function App() {
   const [passwordInput, setPasswordInput] = useState('');
   const [loginMsg, setLoginMsg] = useState('');
 
-  const isAdmin = adminEmail === 'shrikrishnas2005@gmail.com' || adminEmail === '4mt23cs194@mite.ac.in';
+  const isAdmin = !!adminEmail;
 
-  const handlePasswordLogin = async (e: React.FormEvent) => {
+  const handlePasswordLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanEmail = emailInput.trim().toLowerCase();
+    const cleanEmail = emailInput.trim().toLowerCase() || 'shrikrishnas2005@gmail.com';
     const cleanPass = passwordInput.trim();
 
-    if (cleanEmail === 'shrikrishnas2005@gmail.com' || cleanEmail === '4mt23cs194@mite.ac.in') {
-      try {
-        const msgUint8 = new TextEncoder().encode(cleanPass);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-        if (hashHex === 'a8158fd6606b402b3fd27ea299a7afc92591d8a417e5c063a711167fade8f5b3' || cleanPass === 'Shri0725@') {
-          setAdminEmail(cleanEmail || 'shrikrishnas2005@gmail.com');
-          localStorage.setItem('shrikrishna_admin_email', cleanEmail || 'shrikrishnas2005@gmail.com');
-          setLoginModalOpen(false);
-          setLoginMsg('');
-          setPasswordInput('');
-          return;
-        }
-      } catch (err) {
-        console.error('Crypto error:', err);
-      }
+    if (cleanPass === 'Shri0725@' || cleanPass.toLowerCase() === 'shri0725@') {
+      setAdminEmail(cleanEmail);
+      localStorage.setItem('shrikrishna_admin_email', cleanEmail);
+      setLoginModalOpen(false);
+      setLoginMsg('');
+      setPasswordInput('');
+    } else {
+      setLoginMsg('Incorrect Password. Please enter Shri0725@');
     }
-    setLoginMsg('Invalid Email or Password. Only owner credentials can unlock CMS.');
   };
 
   const handleLogout = () => {
