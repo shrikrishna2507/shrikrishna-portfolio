@@ -71,6 +71,8 @@ export const EditorView: React.FC<EditorViewProps> = ({
   const [isSizzling, setIsSizzling] = useState<boolean>(false);
   const [plantStage, setPlantStage] = useState<number>(3);
   const [compassAngle, setCompassAngle] = useState<number>(45);
+  const [cookingStep, setCookingStep] = useState<number>(1);
+  const [isDriving, setIsDriving] = useState<boolean>(false);
 
   const triggerConfetti = () => {
     confetti({
@@ -1141,85 +1143,108 @@ export const EditorView: React.FC<EditorViewProps> = ({
               ))}
             </div>
 
-            {/* STAGE 1: AUTOMOTIVE RESEARCH */}
+            {/* STAGE 1: AUTOMOTIVE RESEARCH & MOVING CAR ANIMATION */}
             {hobbyTab === 'car' && (
               <div style={{ textAlign: 'center', padding: '10px 0' }}>
                 <h3 style={{ fontSize: '20px', color: '#ff8c00', fontWeight: 800, marginBottom: '6px' }}>
-                  🏎️ Automotive Research & V8 Engine Speedometer
+                  🏎️ Moving Car & V8 Engine Speedometer
                 </h3>
-                <p style={{ fontSize: '13.5px', color: 'var(--text-muted)', marginBottom: '24px' }}>
-                  Tap the Rev Engine button below to trigger synthesized V8 twin-turbo exhaust rumble and high RPM needle sweep!
+                <p style={{ fontSize: '13.5px', color: 'var(--text-muted)', marginBottom: '20px' }}>
+                  Watch the car drive along the animated highway track and tap Rev Engine for V8 motor exhaust sound!
                 </p>
 
-                {/* Animated Speedometer Instrument Cluster */}
+                {/* Animated Highway Track with Moving Stripes */}
                 <div style={{
-                  width: '260px',
-                  height: '140px',
-                  margin: '0 auto 24px',
+                  width: '100%',
+                  maxWidth: '520px',
+                  height: '110px',
+                  margin: '0 auto 20px',
+                  borderRadius: '16px',
+                  background: '#090d16',
+                  border: '2px solid #ff8c00',
                   position: 'relative',
-                  borderTopLeftRadius: '140px',
-                  borderTopRightRadius: '140px',
-                  background: 'radial-gradient(circle at bottom, rgba(255, 140, 0, 0.2) 0%, rgba(10, 15, 25, 0.9) 70%)',
-                  border: '3px solid #ff8c00',
-                  borderBottom: 'none',
+                  overflow: 'hidden',
+                  boxShadow: '0 0 25px rgba(255, 140, 0, 0.25)',
                   display: 'flex',
-                  alignItems: 'flex-end',
-                  justifyContent: 'center',
-                  boxShadow: isRevving ? '0 0 40px rgba(255, 140, 0, 0.6)' : '0 0 15px rgba(255, 140, 0, 0.2)',
-                  transition: 'all 0.3s ease'
+                  alignItems: 'center'
                 }}>
-                  {/* Gauge Needle */}
+                  {/* Road Center Stripes */}
                   <div style={{
                     position: 'absolute',
-                    bottom: '0',
-                    left: '50%',
-                    width: '4px',
-                    height: '110px',
-                    background: '#ff5f56',
-                    transformOrigin: 'bottom center',
-                    transform: `translateX(-50%) rotate(${((rpmGauge / 8000) * 180) - 90}deg)`,
-                    transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                    boxShadow: '0 0 10px #ff5f56'
+                    top: '50%',
+                    left: 0,
+                    right: 0,
+                    height: '4px',
+                    borderTop: '3px dashed #ff8c00',
+                    opacity: 0.6,
+                    transform: 'translateY(-50%)'
                   }} />
+
+                  {/* Moving Sports Car Container */}
                   <div style={{
+                    fontSize: '46px',
                     position: 'absolute',
-                    bottom: '-10px',
-                    width: '24px',
-                    height: '24px',
-                    borderRadius: '50%',
-                    background: '#ffffff',
-                    boxShadow: '0 0 10px rgba(255,255,255,0.8)'
-                  }} />
-                  <div style={{ position: 'absolute', bottom: '15px', fontSize: '18px', fontWeight: 900, color: isRevving ? '#ff5f56' : '#ff8c00' }}>
-                    {rpmGauge} RPM
+                    left: isDriving ? '75%' : '20%',
+                    transition: 'left 1s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                    filter: 'drop-shadow(0 0 12px #ff8c00)'
+                  }}>
+                    🏎️
                   </div>
+
+                  {/* Headlight Beam Effect */}
+                  <div style={{
+                    position: 'absolute',
+                    left: isDriving ? '85%' : '30%',
+                    width: '60px',
+                    height: '40px',
+                    background: 'radial-gradient(ellipse at left, rgba(255, 230, 0, 0.5) 0%, rgba(255, 230, 0, 0) 70%)',
+                    transition: 'left 1s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                  }} />
                 </div>
 
-                <button
-                  onClick={playEngineRevSound}
-                  className="cms-btn"
-                  style={{
-                    background: 'linear-gradient(90deg, #ff8c00, #ff5f56)',
-                    padding: '12px 28px',
-                    fontSize: '14px',
-                    margin: '0 auto'
-                  }}
-                >
-                  <Play size={16} fill="currentColor" />
-                  <span>{isRevving ? '🔥 V8 Twin-Turbo Revving!' : '🚀 Press To Rev V8 Engine (Audio & Gauge)'}</span>
-                </button>
+                <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                  <button
+                    onClick={playEngineRevSound}
+                    className="cms-btn"
+                    style={{
+                      background: 'linear-gradient(90deg, #ff8c00, #ff5f56)',
+                      padding: '11px 24px',
+                      fontSize: '13.5px'
+                    }}
+                  >
+                    <Play size={15} fill="currentColor" />
+                    <span>{isRevving ? '🔥 V8 Twin-Turbo Revving!' : '🚀 Rev V8 Engine & Sweep Gauge'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setIsDriving(!isDriving);
+                      playEngineRevSound();
+                    }}
+                    className="cms-btn"
+                    style={{
+                      background: 'var(--bg-editor)',
+                      color: 'var(--text-bright)',
+                      border: '1px solid var(--border-color)',
+                      padding: '11px 20px',
+                      fontSize: '13.5px'
+                    }}
+                  >
+                    <span>{isDriving ? '🛑 Brake & Park Car' : '🏎️ Drive Car Down Highway Track'}</span>
+                  </button>
+                </div>
               </div>
             )}
 
-            {/* STAGE 2: CLASSICAL TABLA & BEATS */}
+            {/* STAGE 2: CLASSICAL TABLA & BEATS (SINGLE SIGNATURE TUNE) */}
             {hobbyTab === 'tabla' && (
               <div>
                 <div style={{ textAlign: 'center', marginBottom: '20px' }}>
                   <h3 style={{ fontSize: '20px', color: '#c084fc', fontWeight: 800, marginBottom: '6px' }}>
-                    🥁 Classical Tabla (District Rank 9th Distinction) & Carnatic Fusion
+                    🥁 Classical Tabla (District Rank 9th Distinction)
                   </h3>
                   <p style={{ fontSize: '13.5px', color: 'var(--text-muted)' }}>
-                    Tap drums directly to trigger authentic Bayan Meend bass & Dayan syahi ring, or tap rhythm Taal presets!
+                    Tap drum heads directly for Bayan Meend bass & Dayan syahi ring, or play Shri Krishna's signature Classical Tabla rhythm!
                   </p>
                 </div>
 
@@ -1277,67 +1302,116 @@ export const EditorView: React.FC<EditorViewProps> = ({
                   </div>
                 </div>
 
-                {/* Rhythm Taal Preset Buttons */}
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                  {['⚡ Carnatic Rock Fusion Groove', '🥁 Fast Drut Teental (Solo)', '🎸 Agam-Style Keherwa Rock', '🎼 Classical Jhaptal (10 Beats)', '🌺 Rupak Classical (7 Beats)'].map((taal) => (
-                    <button
-                      key={taal}
-                      onClick={() => playRhythmBeat(taal)}
-                      style={{
-                        background: activeTaal === taal ? '#c084fc' : 'var(--bg-card)',
-                        color: activeTaal === taal ? '#ffffff' : 'var(--text-bright)',
-                        border: '1px solid var(--border-color)',
-                        padding: '8px 14px',
-                        borderRadius: '20px',
-                        fontSize: '12px',
-                        fontWeight: 700,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px'
-                      }}
-                    >
-                      <Play size={12} fill="currentColor" />
-                      <span>{taal}</span>
-                    </button>
-                  ))}
+                {/* Single Signature Tabla Tune Button */}
+                <div style={{ textAlign: 'center' }}>
+                  <button
+                    onClick={() => playRhythmBeat('⚡ Carnatic Rock Fusion Groove')}
+                    style={{
+                      background: 'linear-gradient(90deg, #c084fc, #38bdf8)',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '12px 28px',
+                      borderRadius: '24px',
+                      fontSize: '14px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      boxShadow: '0 0 25px rgba(192, 132, 252, 0.5)'
+                    }}
+                  >
+                    <Play size={16} fill="#ffffff" />
+                    <span>🥁 Play Signature Classical Fusion Tabla Beat (With Tanpura Drone)</span>
+                  </button>
                 </div>
               </div>
             )}
 
-            {/* STAGE 3: CULINARY ARTS & COOKING */}
+            {/* STAGE 3: CULINARY ARTS & FULL COOKING PREPARATION GUIDE */}
             {hobbyTab === 'cook' && (
               <div style={{ textAlign: 'center', padding: '10px 0' }}>
                 <h3 style={{ fontSize: '20px', color: '#ff5f56', fontWeight: 800, marginBottom: '6px' }}>
-                  🍳 Culinary Arts & Gourmet Spice Sizzler
+                  🍳 Culinary Arts & South Canara Gourmet Cooking Guide
                 </h3>
-                <p style={{ fontSize: '13.5px', color: 'var(--text-muted)', marginBottom: '24px' }}>
-                  Tap to sizzle gourmet spices on a hot skillet pan with interactive audio & steam particles!
+                <p style={{ fontSize: '13.5px', color: 'var(--text-muted)', marginBottom: '20px' }}>
+                  Shri Krishna's Signature Recipe: "South Canara Spiced Ghee Roast Paneer" (Step-by-Step Preparation Guide)
                 </p>
 
-                <div style={{
-                  width: '160px',
-                  height: '160px',
-                  margin: '0 auto 24px',
-                  borderRadius: '50%',
-                  background: 'radial-gradient(circle, #1e293b 0%, #0f172a 100%)',
-                  border: isSizzling ? '4px solid #ff5f56' : '3px solid var(--border-color)',
-                  boxShadow: isSizzling ? '0 0 35px rgba(255, 95, 86, 0.6)' : 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative'
-                }}>
-                  <div style={{ fontSize: '54px' }}>{isSizzling ? '🥘' : '🍳'}</div>
-                  {isSizzling && (
-                    <div style={{ position: 'absolute', top: '-20px', fontSize: '24px', animation: 'pulseGlow 0.5s infinite alternate' }}>
-                      ♨️ 🧄 🌶️
+                {/* Step Progress Tracker */}
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '20px' }}>
+                  {[1, 2, 3, 4].map(s => (
+                    <div
+                      key={s}
+                      onClick={() => { setCookingStep(s); playSizzleSound(); }}
+                      style={{
+                        padding: '6px 14px',
+                        borderRadius: '16px',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        background: cookingStep === s ? '#ff5f56' : 'var(--bg-editor)',
+                        color: cookingStep === s ? '#ffffff' : 'var(--text-muted)',
+                        border: '1px solid var(--border-color)'
+                      }}
+                    >
+                      Step {s}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Interactive Cooking Card */}
+                <div className="card" style={{ maxWidth: '520px', margin: '0 auto 20px', textAlign: 'left', border: '1px solid #ff5f56' }}>
+                  {cookingStep === 1 && (
+                    <div>
+                      <div style={{ fontSize: '16px', fontWeight: 800, color: '#ff5f56', marginBottom: '6px' }}>
+                        🔪 Step 1: Ingredient Prep & Whole Spices Roast
+                      </div>
+                      <p style={{ fontSize: '13.5px', color: 'var(--text-main)', lineHeight: 1.6 }}>
+                        Dice fresh cottage cheese (Paneer) into even cubes. Dry roast whole spices: Kashmiri red chilies, coriander seeds, cumin, black pepper, cinnamon, and cloves until aromatic.
+                      </p>
+                    </div>
+                  )}
+
+                  {cookingStep === 2 && (
+                    <div>
+                      <div style={{ fontSize: '16px', fontWeight: 800, color: '#ff5f56', marginBottom: '6px' }}>
+                        🧄 Step 2: Signature Spice Paste & Marination
+                      </div>
+                      <p style={{ fontSize: '13.5px', color: 'var(--text-main)', lineHeight: 1.6 }}>
+                        Grind roasted spices with fresh garlic, ginger, tamarind pulp, and lemon juice into a velvety red spice paste. Coat paneer cubes thoroughly and rest for 15 minutes.
+                      </p>
+                    </div>
+                  )}
+
+                  {cookingStep === 3 && (
+                    <div>
+                      <div style={{ fontSize: '16px', fontWeight: 800, color: '#ff5f56', marginBottom: '6px' }}>
+                        🥘 Step 3: Skillet Pan Ghee Sizzle & Saute
+                      </div>
+                      <p style={{ fontSize: '13.5px', color: 'var(--text-main)', lineHeight: 1.6 }}>
+                        Melt pure cow ghee on a heavy cast iron skillet. Add fresh curry leaves and toss marinated paneer cubes on high flame until caramelized & rich in aroma.
+                      </p>
+                    </div>
+                  )}
+
+                  {cookingStep === 4 && (
+                    <div>
+                      <div style={{ fontSize: '16px', fontWeight: 800, color: '#34d399', marginBottom: '6px' }}>
+                        🍽️ Step 4: Garnish, Plating & Serving
+                      </div>
+                      <p style={{ fontSize: '13.5px', color: 'var(--text-main)', lineHeight: 1.6 }}>
+                        Garnish with golden toasted cashews, finely chopped fresh coriander leaves, and a squeeze of lime. Serve piping hot with Neer Dosa or Rotis!
+                      </p>
                     </div>
                   )}
                 </div>
 
                 <button
-                  onClick={playSizzleSound}
+                  onClick={() => {
+                    setCookingStep(prev => (prev >= 4 ? 1 : prev + 1));
+                    playSizzleSound();
+                  }}
                   className="cms-btn"
                   style={{
                     background: 'linear-gradient(90deg, #ff5f56, #ff8c00)',
@@ -1346,25 +1420,25 @@ export const EditorView: React.FC<EditorViewProps> = ({
                     margin: '0 auto'
                   }}
                 >
-                  <Play size={16} fill="currentColor" />
-                  <span>{isSizzling ? '🔥 Sizzling Gourmet Spices!' : '👨‍🍳 Sizzle Spices on Skillet Pan (Audio)'}</span>
+                  <Play size={15} fill="currentColor" />
+                  <span>{cookingStep === 4 ? '🔄 Restart Recipe Guide' : `➡️ Advance To Step ${cookingStep + 1} (With Sizzle Sound)`}</span>
                 </button>
               </div>
             )}
 
-            {/* STAGE 4: GARDENING & AGRICULTURE */}
+            {/* STAGE 4: GARDENING & AGRICULTURE (NATURAL GROWTH) */}
             {hobbyTab === 'garden' && (
               <div style={{ textAlign: 'center', padding: '10px 0' }}>
                 <h3 style={{ fontSize: '20px', color: '#34d399', fontWeight: 800, marginBottom: '6px' }}>
-                  🌿 Gardening & Agriculture Eco Growth
+                  🌿 Gardening & Natural Organic Plant Growth
                 </h3>
-                <p style={{ fontSize: '13.5px', color: 'var(--text-muted)', marginBottom: '24px' }}>
-                  Tap below to water the plant and watch it bloom through 4 organic growth stages with chime audio!
+                <p style={{ fontSize: '13.5px', color: 'var(--text-muted)', marginBottom: '20px' }}>
+                  Observe organic natural growth progression from seed in soil to vibrant full bloom!
                 </p>
 
                 <div style={{
-                  width: '150px',
-                  height: '150px',
+                  width: '160px',
+                  height: '160px',
                   margin: '0 auto 20px',
                   borderRadius: '24px',
                   background: 'rgba(52, 211, 153, 0.1)',
@@ -1373,16 +1447,16 @@ export const EditorView: React.FC<EditorViewProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '56px'
+                  fontSize: '60px'
                 }}>
-                  {plantStage === 1 && '🌱'}
-                  {plantStage === 2 && '🌿'}
-                  {plantStage === 3 && '🌸'}
+                  {plantStage === 1 && '🫘'}
+                  {plantStage === 2 && '🌱'}
+                  {plantStage === 3 && '🌿'}
                   {plantStage === 4 && '🌻'}
                 </div>
 
                 <div style={{ fontSize: '14px', color: '#34d399', fontWeight: 700, marginBottom: '20px' }}>
-                  Growth Stage {plantStage} of 4: {['Seedling', 'Foliage Growth', 'Flower Bloom', 'Full Harvest'][plantStage - 1]}
+                  Stage {plantStage} of 4: {['Organic Seed in Soil', 'Green Sprout & Roots', 'Branching Foliage', 'Full Natural Bloom & Harvest'][plantStage - 1]}
                 </div>
 
                 <button
@@ -1395,8 +1469,8 @@ export const EditorView: React.FC<EditorViewProps> = ({
                     margin: '0 auto'
                   }}
                 >
-                  <Play size={16} fill="currentColor" />
-                  <span>💧 Water Plant & Bloom Next Stage (Audio)</span>
+                  <Play size={15} fill="currentColor" />
+                  <span>💧 Water Plant & Bloom Next Natural Stage (Audio)</span>
                 </button>
               </div>
             )}
@@ -1407,7 +1481,7 @@ export const EditorView: React.FC<EditorViewProps> = ({
                 <h3 style={{ fontSize: '20px', color: '#38bdf8', fontWeight: 800, marginBottom: '6px' }}>
                   🧭 Rajya Puraskar Governor Scout Award & Outdoor Trekking
                 </h3>
-                <p style={{ fontSize: '13.5px', color: 'var(--text-muted)', marginBottom: '24px' }}>
+                <p style={{ fontSize: '13.5px', color: 'var(--text-muted)', marginBottom: '20px' }}>
                   Tap below to rotate the magnetic compass needle and trigger the Governor Award triumph chime!
                 </p>
 
@@ -1447,7 +1521,7 @@ export const EditorView: React.FC<EditorViewProps> = ({
                     margin: '0 auto'
                   }}
                 >
-                  <Play size={16} fill="currentColor" />
+                  <Play size={15} fill="currentColor" />
                   <span>🧭 Rotate Compass & Trigger Triumph Chime</span>
                 </button>
               </div>
