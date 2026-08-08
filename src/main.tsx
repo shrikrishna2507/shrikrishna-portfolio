@@ -9,7 +9,7 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
   }
 
   static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error: error.message };
+    return { hasError: true, error: error ? error.toString() : 'Unknown Error' };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
@@ -30,7 +30,7 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
     if (this.state.hasError) {
       return (
         <div style={{
-          height: '100vh',
+          minHeight: '100vh',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -46,15 +46,26 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
             border: '1px solid rgba(255, 255, 255, 0.15)',
             borderRadius: '16px',
             padding: '40px',
-            maxWidth: '500px',
+            maxWidth: '600px',
             boxShadow: '0 20px 50px rgba(0,0,0,0.8)'
           }}>
             <h2 style={{ fontSize: '22px', marginBottom: '12px', color: '#38bdf8' }}>
               Shri Krishna S Bhat Portfolio
             </h2>
-            <p style={{ fontSize: '14px', color: '#94a3b8', marginBottom: '24px', lineHeight: 1.6 }}>
-              The application encountered a browser cache sync state. Click below to refresh with pristine portfolio data.
-            </p>
+            <div style={{
+              background: 'rgba(239, 68, 68, 0.15)',
+              border: '1px solid rgba(239, 68, 68, 0.4)',
+              color: '#f87171',
+              padding: '12px 16px',
+              borderRadius: '8px',
+              fontSize: '13px',
+              fontFamily: 'monospace',
+              marginBottom: '20px',
+              wordBreak: 'break-word',
+              textAlign: 'left'
+            }}>
+              <strong>Error Trace:</strong> {this.state.error}
+            </div>
             <button
               onClick={this.handleReset}
               style={{
@@ -68,7 +79,7 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
                 cursor: 'pointer'
               }}
             >
-              Restore Fresh Portfolio View
+              Reset & Reload Fresh Portfolio Data
             </button>
           </div>
         </div>
