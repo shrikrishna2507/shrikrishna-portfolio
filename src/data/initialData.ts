@@ -47,7 +47,7 @@ export const initialProfileData: ProfileData = {
       status: 'In Progress',
       date: 'Dec 2024 – Present',
       image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=800&q=80',
-      githubUrl: 'https://github.com/shrikrishna2507/Brand-Specific-Apparel-Fit-Prediction-and-Avatar-Based-Virtual-Try-On',
+      githubUrl: 'https://github.com/SujanSp27/Brand-Specific-Apparel-Fit-Prediction-and-Avatar-Based-Virtual-Try-On-Using-Computer-Vision',
     },
     {
       id: 'proj-2',
@@ -95,7 +95,7 @@ export const initialProfileData: ProfileData = {
       status: 'Completed',
       date: 'Apr 2024',
       image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80',
-      githubUrl: 'https://github.com/shrikrishna2507/Vehicle-classification-Auto-Tech-',
+      githubUrl: 'https://github.com/SujanSp27/Vehicle-classification-Auto-Tech-',
     },
     {
       id: 'proj-6',
