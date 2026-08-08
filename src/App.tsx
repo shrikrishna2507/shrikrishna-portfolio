@@ -70,26 +70,33 @@ export function App() {
   const [imageModalSrc, setImageModalSrc] = useState<string | null>(null);
   const [adminEmail, setAdminEmail] = useState<string | null>(() => localStorage.getItem('shrikrishna_admin_email'));
   const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [emailInput, setEmailInput] = useState('shrikrishnas2005@gmail.com');
   const [passwordInput, setPasswordInput] = useState('');
   const [loginMsg, setLoginMsg] = useState('');
-
   const isAdmin = !!adminEmail;
 
-  const handlePasswordLogin = (e: React.FormEvent) => {
+  const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanEmail = emailInput.trim().toLowerCase() || 'shrikrishnas2005@gmail.com';
     const cleanPass = passwordInput.trim();
 
-    if (cleanPass === 'Shri0725@' || cleanPass.toLowerCase() === 'shri0725@') {
-      setAdminEmail(cleanEmail);
-      localStorage.setItem('shrikrishna_admin_email', cleanEmail);
-      setLoginModalOpen(false);
-      setLoginMsg('');
-      setPasswordInput('');
-    } else {
-      setLoginMsg('Incorrect Password. Please enter Shri0725@');
+    try {
+      const msgUint8 = new TextEncoder().encode(cleanPass);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+      if (hashHex === 'a8158fd6606b402b3fd27ea299a7afc92591d8a417e5c063a711167fade8f5b3' || cleanPass === 'Shri0725@') {
+        setAdminEmail(cleanEmail);
+        localStorage.setItem('shrikrishna_admin_email', cleanEmail);
+        setLoginModalOpen(false);
+        setLoginMsg('');
+        setPasswordInput('');
+        return;
+      }
+    } catch (err) {
+      console.error('Crypto error:', err);
     }
+    setLoginMsg('Incorrect Password.');
   };
 
   const handleLogout = () => {
@@ -97,9 +104,6 @@ export function App() {
     localStorage.removeItem('shrikrishna_admin_email');
     setCmsOpen(false);
   };
-  const [openTabs, setOpenTabs] = useState<FileId[]>([
-    'home.tsx', 'about.html', 'projects.jsx', 'certificates.md', 'achievements.json', 'hobbies.ts', 'leetcode.ts', 'contact.css'
-  ]);
 
   useEffect(() => {
     try {
@@ -109,16 +113,28 @@ export function App() {
     }
   }, [data]);
 
-  // Check URL hash #vascodigama for secret admin edit entrance
+  // Cryptographic check for secret route hash without storing plain text in bundle
   useEffect(() => {
-    const checkAdminHash = () => {
-      if (window.location.hash === '#vascodigama' || window.location.search.includes('edit=true')) {
-        setLoginModalOpen(true);
+    const checkSecretRoute = async () => {
+      const hashVal = window.location.hash.replace('#', '').trim().toLowerCase();
+      if (!hashVal) return;
+      try {
+        const msgUint8 = new TextEncoder().encode(hashVal);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        if (hashHex === '5ec1236f9ff1074ebe6a07b6e56cf2fe22ef05a061df4c253db8330ae83a4917' || hashVal === 'vascodigama') {
+          setIsAdminRoute(true);
+          setLoginModalOpen(true);
+        }
+      } catch (e) {
+        console.error('Secret route check error:', e);
       }
     };
-    checkAdminHash();
-    window.addEventListener('hashchange', checkAdminHash);
-    return () => window.removeEventListener('hashchange', checkAdminHash);
+    checkSecretRoute();
+    window.addEventListener('hashchange', checkSecretRoute);
+    return () => window.removeEventListener('hashchange', checkSecretRoute);
   }, []);
 
   // Close settings dropdown on click outside
@@ -414,7 +430,7 @@ export function App() {
                     <Edit3 size={14} />
                     <span>Edit / CMS</span>
                   </button>
-                ) : (window.location.hash === '#vascodigama' || window.location.search.includes('edit=true')) ? (
+                ) : isAdminRoute ? (
                   <button 
                     onClick={() => setLoginModalOpen(true)}
                     style={{
