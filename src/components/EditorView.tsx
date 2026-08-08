@@ -73,67 +73,174 @@ export const EditorView: React.FC<EditorViewProps> = ({
     });
   };
 
-  const playTablaSound = (type: 'dha' | 'dhin' | 'tin' | 'na' | 'ge') => {
+  const playTablaSound = (type: 'dha' | 'dhin' | 'tin' | 'na' | 'ge' | 'kat') => {
     try {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
       if (!AudioCtx) return;
       const ctx = new AudioCtx();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
       const now = ctx.currentTime;
 
+      const masterGain = ctx.createGain();
+      masterGain.gain.setValueAtTime(0.9, now);
+      masterGain.connect(ctx.destination);
+
       if (type === 'dha' || type === 'ge') {
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(140, now);
-        osc.frequency.exponentialRampToValueAtTime(55, now + 0.35);
-        gain.gain.setValueAtTime(0.9, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-        osc.start(now);
-        osc.stop(now + 0.4);
+        // --- BAYAN DEEP BASS MEEND (GLIDE) ---
+        const bassOsc = ctx.createOscillator();
+        const bassGain = ctx.createGain();
+        bassOsc.type = 'sine';
+        bassOsc.frequency.setValueAtTime(145, now);
+        bassOsc.frequency.exponentialRampToValueAtTime(42, now + 0.42);
+
+        bassGain.gain.setValueAtTime(1.0, now);
+        bassGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+        bassOsc.connect(bassGain);
+        bassGain.connect(masterGain);
+        bassOsc.start(now);
+        bassOsc.stop(now + 0.45);
+
+        // Dayan resonant skin ring
+        const trebleOsc = ctx.createOscillator();
+        const trebleGain = ctx.createGain();
+        trebleOsc.type = 'sine';
+        trebleOsc.frequency.setValueAtTime(293.66, now);
+        trebleOsc.frequency.exponentialRampToValueAtTime(220, now + 0.25);
+
+        trebleGain.gain.setValueAtTime(0.65, now);
+        trebleGain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+
+        trebleOsc.connect(trebleGain);
+        trebleGain.connect(masterGain);
+        trebleOsc.start(now);
+        trebleOsc.stop(now + 0.28);
       } else if (type === 'dhin') {
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(190, now);
-        osc.frequency.exponentialRampToValueAtTime(80, now + 0.28);
-        gain.gain.setValueAtTime(0.8, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
-        osc.start(now);
-        osc.stop(now + 0.32);
-      } else {
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(340, now);
-        osc.frequency.exponentialRampToValueAtTime(240, now + 0.16);
-        gain.gain.setValueAtTime(0.6, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-        osc.start(now);
-        osc.stop(now + 0.2);
+        // --- DHIN TUNED RESONANCE ---
+        const bassOsc = ctx.createOscillator();
+        const bassGain = ctx.createGain();
+        bassOsc.type = 'triangle';
+        bassOsc.frequency.setValueAtTime(175, now);
+        bassOsc.frequency.exponentialRampToValueAtTime(60, now + 0.35);
+
+        bassGain.gain.setValueAtTime(0.85, now);
+        bassGain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+        bassOsc.connect(bassGain);
+        bassGain.connect(masterGain);
+        bassOsc.start(now);
+        bassOsc.stop(now + 0.38);
+
+        const syahiOsc = ctx.createOscillator();
+        const syahiGain = ctx.createGain();
+        syahiOsc.type = 'sine';
+        syahiOsc.frequency.setValueAtTime(329.63, now);
+        syahiOsc.frequency.exponentialRampToValueAtTime(260, now + 0.22);
+
+        syahiGain.gain.setValueAtTime(0.6, now);
+        syahiGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+        syahiOsc.connect(syahiGain);
+        syahiGain.connect(masterGain);
+        syahiOsc.start(now);
+        syahiOsc.stop(now + 0.25);
+      } else if (type === 'tin' || type === 'na') {
+        // --- DAYAN TREBLE BELL (CHANTI) ---
+        const chantiOsc = ctx.createOscillator();
+        const chantiGain = ctx.createGain();
+        chantiOsc.type = 'sine';
+        chantiOsc.frequency.setValueAtTime(392.00, now);
+        chantiOsc.frequency.exponentialRampToValueAtTime(330, now + 0.18);
+
+        chantiGain.gain.setValueAtTime(0.75, now);
+        chantiGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+
+        chantiOsc.connect(chantiGain);
+        chantiGain.connect(masterGain);
+        chantiOsc.start(now);
+        chantiOsc.stop(now + 0.2);
+      } else if (type === 'kat') {
+        // --- KAT DRY SLAP ---
+        const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.04, ctx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < noiseBuffer.length; i++) {
+          output[i] = Math.random() * 2 - 1;
+        }
+        const whiteNoise = ctx.createBufferSource();
+        whiteNoise.buffer = noiseBuffer;
+
+        const noiseGain = ctx.createGain();
+        noiseGain.gain.setValueAtTime(0.45, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+        whiteNoise.connect(noiseGain);
+        noiseGain.connect(masterGain);
+        whiteNoise.start(now);
       }
     } catch (e) {
       console.log('Web Audio error:', e);
     }
   };
 
+  const playTanpuraDrone = () => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const now = ctx.currentTime;
+      const freqs = [130.81, 196.00, 261.63, 392.00];
+      freqs.forEach((f, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(f, now + idx * 0.15);
+        gain.gain.setValueAtTime(0, now + idx * 0.15);
+        gain.gain.linearRampToValueAtTime(0.06, now + idx * 0.15 + 0.3);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.5);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + idx * 0.15);
+        osc.stop(now + 3.5);
+      });
+    } catch (e) {}
+  };
+
   const playRhythmBeat = (taalName: string) => {
     setActiveTaal(taalName);
     triggerConfetti();
+    playTanpuraDrone();
 
-    const patternMap: Record<string, Array<'dha' | 'dhin' | 'tin' | 'na' | 'ge'>> = {
-      'Teental (16 Beats)': ['dha', 'dhin', 'dhin', 'dha', 'dha', 'dhin', 'dhin', 'dha', 'dha', 'tin', 'tin', 'na', 'na', 'dhin', 'dhin', 'dha'],
-      'Keherwa (8 Beats)': ['dha', 'ge', 'na', 'tin', 'na', 'ge', 'dhin', 'na'],
-      'Dadra (6 Beats)': ['dha', 'dhin', 'na', 'dha', 'tin', 'na'],
-      'Rupak (7 Beats)': ['tin', 'tin', 'na', 'dhin', 'na', 'dhin', 'na']
+    const patternMap: Record<string, { tempo: number; sequence: Array<'dha' | 'dhin' | 'tin' | 'na' | 'ge' | 'kat'> }> = {
+      '⚡ Carnatic Rock Fusion Groove': {
+        tempo: 175,
+        sequence: ['dha', 'dhin', 'dha', 'kat', 'dhin', 'dha', 'ge', 'na', 'dha', 'dhin', 'dhin', 'dha', 'kat', 'tin', 'na', 'dha']
+      },
+      '🥁 Fast Drut Teental (Solo)': {
+        tempo: 160,
+        sequence: ['dha', 'dhin', 'dhin', 'dha', 'dha', 'dhin', 'dhin', 'dha', 'dha', 'tin', 'tin', 'na', 'na', 'dhin', 'dhin', 'dha']
+      },
+      '🎸 Agam-Style Keherwa Rock': {
+        tempo: 200,
+        sequence: ['dha', 'ge', 'na', 'tin', 'na', 'ge', 'dhin', 'na']
+      },
+      '🎼 Classical Jhaptal (10 Beats)': {
+        tempo: 210,
+        sequence: ['dhin', 'na', 'dhin', 'dhin', 'na', 'tin', 'na', 'dhin', 'dhin', 'na']
+      },
+      '🌺 Rupak Classical (7 Beats)': {
+        tempo: 220,
+        sequence: ['tin', 'tin', 'na', 'dhin', 'na', 'dhin', 'na']
+      }
     };
 
-    const sequence = patternMap[taalName] || ['dha', 'dhin', 'tin', 'na'];
-    sequence.forEach((stroke, idx) => {
+    const config = patternMap[taalName] || { tempo: 200, sequence: ['dha', 'dhin', 'tin', 'na'] };
+    config.sequence.forEach((stroke, idx) => {
       setTimeout(() => {
         playTablaSound(stroke);
-      }, idx * 260);
+      }, idx * config.tempo);
     });
 
-    setTimeout(() => setActiveTaal(null), sequence.length * 260 + 500);
+    setTimeout(() => setActiveTaal(null), config.sequence.length * config.tempo + 600);
   };
 
   const filteredProjects = (data?.projects || []).filter(p => {
@@ -843,7 +950,7 @@ export const EditorView: React.FC<EditorViewProps> = ({
               </div>
 
               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                {['Teental (16 Beats)', 'Keherwa (8 Beats)', 'Dadra (6 Beats)', 'Rupak (7 Beats)'].map((taal) => (
+                {['⚡ Carnatic Rock Fusion Groove', '🥁 Fast Drut Teental (Solo)', '🎸 Agam-Style Keherwa Rock', '🎼 Classical Jhaptal (10 Beats)', '🌺 Rupak Classical (7 Beats)'].map((taal) => (
                   <button
                     key={taal}
                     onClick={() => playRhythmBeat(taal)}
