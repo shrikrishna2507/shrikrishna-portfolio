@@ -234,7 +234,7 @@ export function App() {
     { id: 'certificates.md', label: `Certificates (${data?.certifications?.length || 0})`, icon: <ShieldCheck size={15} /> },
     { id: 'achievements.json', label: `Awards (${data?.achievements?.length || 0})`, icon: <Award size={15} /> },
     { id: 'hobbies.ts', label: 'Hobbies', icon: <Heart size={15} /> },
-    { id: 'leetcode.ts', label: 'LeetCode (75)', icon: <Flame size={15} /> },
+    { id: 'leetcode.ts', label: `LeetCode (${data?.leetcodeStats?.totalSolved || 90})`, icon: <Flame size={15} /> },
     { id: 'contact.css', label: 'Contact', icon: <Mail size={15} /> }
   ];
 
