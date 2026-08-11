@@ -302,11 +302,11 @@ export const initialProfileData: ProfileData = {
     }
   ],
   leetcodeStats: {
-    totalSolved: 75,
-    easy: 38,
-    medium: 31,
-    hard: 6,
-    submissions: 135,
+    totalSolved: 90,
+    easy: 44,
+    medium: 42,
+    hard: 4,
+    submissions: 163,
     streakDays: 50
   }
 };
