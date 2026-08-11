@@ -602,7 +602,7 @@ export const EditorView: React.FC<EditorViewProps> = ({
               </div>
               <div>
                 <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>LeetCode Solved</div>
-                <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-bright)' }}>75+ Problems</div>
+                <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-bright)' }}>{data.leetcodeStats?.totalSolved || 90}+ Problems</div>
               </div>
             </div>
 
@@ -1596,17 +1596,17 @@ export const EditorView: React.FC<EditorViewProps> = ({
             <div className="card">
               <div style={{ fontSize: '12.5px', color: 'var(--text-muted)' }}>Total Problems Solved</div>
               <div style={{ fontSize: '38px', fontWeight: 900, color: '#fbbf24' }}>
-                75
+                {data.leetcodeStats?.totalSolved || 90}
               </div>
               <div style={{ fontSize: '12.5px', color: 'var(--text-muted)', marginTop: '4px' }}>
-                135+ Submissions
+                {data.leetcodeStats?.submissions || 163}+ Submissions
               </div>
             </div>
 
             <div className="card">
               <div style={{ fontSize: '12.5px', color: '#34d399' }}>Easy Solved</div>
               <div style={{ fontSize: '34px', fontWeight: 800, color: '#34d399' }}>
-                38
+                {data.leetcodeStats?.easy || 44}
               </div>
               <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>Arrays, Strings, Two Pointers</div>
             </div>
@@ -1614,7 +1614,7 @@ export const EditorView: React.FC<EditorViewProps> = ({
             <div className="card">
               <div style={{ fontSize: '12.5px', color: '#ff8c00' }}>Medium Solved</div>
               <div style={{ fontSize: '34px', fontWeight: 800, color: '#ff8c00' }}>
-                31
+                {data.leetcodeStats?.medium || 42}
               </div>
               <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>Trees, Graphs, Hashing</div>
             </div>
@@ -1622,7 +1622,7 @@ export const EditorView: React.FC<EditorViewProps> = ({
             <div className="card">
               <div style={{ fontSize: '12.5px', color: '#f472b6' }}>Hard Solved</div>
               <div style={{ fontSize: '34px', fontWeight: 800, color: '#f472b6' }}>
-                6
+                {data.leetcodeStats?.hard || 4}
               </div>
               <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>Dynamic Programming</div>
             </div>

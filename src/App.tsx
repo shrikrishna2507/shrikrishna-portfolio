@@ -34,7 +34,7 @@ import {
 import confetti from 'canvas-confetti';
 import './styles/index.css';
 
-const LOCAL_STORAGE_KEY = 'shrikrishna_portfolio_data_v21';
+const LOCAL_STORAGE_KEY = 'shrikrishna_portfolio_data_v22';
 
 const BACKGROUND_WALLPAPERS = [
   { id: 'classic', label: '⚜️ Classic Dark Amber (Default)', url: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1920&q=80' },
@@ -122,8 +122,10 @@ export function App() {
 
   useEffect(() => {
     try {
-      for (let i = 1; i < 20; i++) {
-        localStorage.removeItem(`shrikrishna_portfolio_data_v${i}`);
+      for (let i = 1; i <= 25; i++) {
+        if (`shrikrishna_portfolio_data_v${i}` !== LOCAL_STORAGE_KEY) {
+          localStorage.removeItem(`shrikrishna_portfolio_data_v${i}`);
+        }
       }
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
     } catch (e) {
